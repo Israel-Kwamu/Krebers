@@ -1,0 +1,5 @@
+.table td, .table th { vertical-align: middle; }
+button:focus { outline: none; box-shadow: none; }
+.hover-text-primary:hover {
+  color: var(--bs-primary) !important;
+}

@@ -1,0 +1,169 @@
+/* ===========================
+   TOPBAR ICON STYLING
+=========================== */
+.topbar-icon i {
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.topbar-icon:hover i {
+  color: #ff0000;
+}
+
+/* Round Icon Buttons (Electro Style) */
+.icon-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  transition: 0.2s ease-in-out;
+}
+
+.icon-circle:hover {
+  border-color:red;
+  color: red;
+}
+
+/* Cart Badge */
+.cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #ff0000;
+  color: #fff;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 11px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Cart price text */
+.cart-total {
+  font-size: 16px;
+  font-weight: 500;
+  color: #444;
+}
+
+/* ===========================
+   AUTOCOMPLETE LIST
+=========================== */
+.suggestion-list {
+  max-height: 380px;
+  overflow-y: auto;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  z-index: 1050 !important;
+}
+
+.suggestion-item {
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  background-color: #fff;
+}
+
+.suggestion-item:hover {
+  background-color: #fff5f5;
+  border-left: 4px solid #dc3545 !important;
+}
+
+.suggestion-item .product-title {
+  color: #1e293b;
+  font-size: 0.95rem;
+}
+
+.search-tag-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background-color: #f1f5f9 !important;
+  color: #475569 !important;
+}
+
+
+/* Custom Scrollbar */
+.suggestion-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.suggestion-list::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.25);
+  border-radius: 3px;
+}
+
+
+
+
+/* MAIN LIST WRAPPER */
+.custom-category-menu {
+    padding: 8px 0;
+}
+
+/* EACH MAIN SECTION ITEM */
+.custom-cat-item {
+    margin-bottom: 8px;
+}
+
+/* MAIN SECTION LINK */
+.custom-cat-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 12px 18px;
+    background: #ffffff;
+    border-radius: 6px;
+
+    font-weight: 600;
+    font-size: 15px;
+    color: #c60000;
+
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    transition: all 0.25s ease;
+}
+
+/* HOVER EFFECT FOR MAIN SECTION */
+.custom-cat-link:hover {
+    background: #ffe4e4;
+    color: #9b0000;
+}
+
+/* DROPDOWN SUBMENU */
+.custom-submenu {
+    padding: 8px 0;
+    border-radius: 8px !important;
+    border: none;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    background: #fff;
+}
+
+/* SUBMENU ITEMS */
+.custom-subitem {
+    padding: 10px 18px;
+    font-size: 14px;
+    color: #444;
+
+    transition: background-color 0.25s ease, padding-left 0.25s ease;
+}
+
+/* SUBMENU HOVER */
+.custom-subitem:hover {
+    background: #f8f8f8;
+    padding-left: 24px;
+}
+
+/* REMOVE LAST GAP */
+.custom-cat-item:last-child {
+    margin-bottom: 0;
+}

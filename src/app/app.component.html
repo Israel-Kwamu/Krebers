@@ -1,0 +1,46 @@
+<app-header></app-header>
+
+<router-outlet></router-outlet>
+
+<app-footer></app-footer>
+
+<!-- Global Toast Notifications Container -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3 z-3" style="max-width: 380px;">
+  <div *ngFor="let toast of toasts" 
+       class="toast show align-items-center border-0 rounded-4 shadow-lg mb-2 overflow-hidden bg-white text-dark border-start border-4"
+       [ngClass]="{
+         'border-success': toast.type === 'success',
+         'border-info': toast.type === 'info',
+         'border-warning': toast.type === 'warning',
+         'border-danger': toast.type === 'danger'
+       }">
+    <div class="d-flex align-items-center p-3">
+      <!-- Thumbnail if provided -->
+      <img *ngIf="toast.image" [src]="toast.image" class="rounded-3 me-3 border object-fit-cover" style="width: 48px; height: 48px; flex-shrink: 0;" alt="Product">
+      
+      <!-- Fallback Icon if no image -->
+      <div *ngIf="!toast.image" class="rounded-circle me-3 d-flex align-items-center justify-content-center text-white flex-shrink-0"
+           style="width: 40px; height: 40px;"
+           [ngClass]="{
+             'bg-success': toast.type === 'success',
+             'bg-info': toast.type === 'info',
+             'bg-warning': toast.type === 'warning',
+             'bg-danger': toast.type === 'danger'
+           }">
+        <i class="fas" [ngClass]="{
+          'fa-check': toast.type === 'success',
+          'fa-heart': toast.type === 'info',
+          'fa-exclamation-triangle': toast.type === 'warning',
+          'fa-times': toast.type === 'danger'
+        }"></i>
+      </div>
+
+      <div class="flex-grow-1 me-2">
+        <h6 class="fw-bold mb-0 text-dark fs-6">{{ toast.title }}</h6>
+        <small class="text-muted text-truncate d-block" style="max-width: 240px;">{{ toast.message }}</small>
+      </div>
+
+      <button type="button" class="btn-close ms-auto me-1" (click)="removeToast(toast.id)"></button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,340 @@
+<!-- Topbar Start -->
+<div class="container-fluid px-5 d-none border-bottom d-lg-block">
+    <div class="row gx-0 align-items-center">
+        <div class="col-lg-4 text-center text-lg-start mb-lg-0">
+            <div class="d-inline-flex align-items-center" style="height: 45px;">
+                <a href="#" class="text-muted me-2">Help</a><small> / </small>
+                <a href="#" class="text-muted mx-2">Support</a><small> / </small>
+                <a href="/contact" class="text-muted ms-2">Contact</a>
+            </div>
+        </div>
+        <div class="col-lg-4 text-center d-flex align-items-center justify-content-center">
+            <small class="text-dark">Call Us:</small>
+            <a href="#" class="text-muted">(+234) 913 4422 954</a>
+        </div>
+
+        <div class="col-lg-4 text-center text-lg-end">
+            <div class="d-inline-flex align-items-center" style="height: 45px;">
+                <!-- Dynamic FX Currency Dropdown -->
+                <div class="dropdown me-2 position-relative">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1 border-0 fw-bold text-dark" 
+                            type="button" id="currencyDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Change FX Currency">
+                        <small class="fw-bold">{{ activeCurrency.symbol }} ({{ activeCurrency.name }})</small>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg rounded-3 border-0 p-2" style="min-width: 240px; z-index: 1050;">
+                        <li class="dropdown-header fw-bold text-uppercase text-muted border-bottom pb-1 mb-1 small d-flex align-items-center justify-content-between">
+                            <span><i class="fas fa-coins me-1 text-primary"></i> Select Currency</span>
+                            <span class="badge bg-success-subtle text-success border border-success rounded-pill px-2 py-0.5 text-none" style="font-size: 10px;" title="Real-time exchange rates auto-updated">
+                              <i class="fas fa-wifi me-1"></i>Live
+                            </span>
+                        </li>
+                        <li *ngFor="let curr of currencies">
+                            <button class="dropdown-item rounded-2 d-flex align-items-center justify-content-between py-2 my-1"
+                                    [class.active]="curr.code === activeCurrency.code"
+                                    (click)="selectCurrency(curr.code)">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="fw-bold text-primary fs-6" style="min-width: 28px; text-align: center;">{{ curr.symbol }}</span>
+                                    <div>
+                                        <div class="fw-bold fs-7">{{ curr.name }}</div>
+                                        <small class="text-muted" *ngIf="curr.code !== 'NGN'">1 {{ curr.symbol }} = ₦{{ curr.rateToNgn | number:'1.0-2' }}</small>
+                                        <small class="text-muted" *ngIf="curr.code === 'NGN'">Base Currency</small>
+                                    </div>
+                                </div>
+                                <i class="fas fa-check text-primary ms-2" *ngIf="curr.code === activeCurrency.code"></i>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Theme Toggle Button -->
+                <button class="btn btn-sm btn-outline-secondary rounded-pill border-0 me-2 d-flex align-items-center gap-1 text-dark fw-bold px-2 py-1"
+                        (click)="toggleTheme()"
+                        [title]="themeService.isDark() ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+                  <i class="fas" [class.fa-moon]="!themeService.isDark()" [class.fa-sun]="themeService.isDark()" [class.text-warning]="themeService.isDark()"></i>
+                  <small class="d-none d-sm-inline">{{ themeService.isDark() ? 'Dark' : 'Light' }}</small>
+                </button>
+
+                <div class="dropdown">
+                    <a href="#" class="dropdown-toggle text-muted mx-2"
+                        data-bs-toggle="dropdown"><small>English</small></a>
+                    <div class="dropdown-menu rounded">
+                        <a href="#" class="dropdown-item">English</a>
+                        <a href="#" class="dropdown-item">Turkish</a>
+                        <a href="#" class="dropdown-item">Spanish</a>
+                        <a href="#" class="dropdown-item">Italiano</a>
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <a href="#" class="dropdown-toggle text-muted ms-2" data-bs-toggle="dropdown">
+                        <small><i class="fas fa-home me-2"></i> My Dashboard</small>
+                    </a>
+                    <div class="dropdown-menu rounded">
+                        <a href="/login" class="dropdown-item">Login</a>
+                        <a routerLink="/wishlist" class="dropdown-item">Wishlist</a>
+                        <a href="#" class="dropdown-item">My Card</a>
+                        <a href="#" class="dropdown-item">Notifications</a>
+                        <a href="#" class="dropdown-item">Account Settings</a>
+                        <a href="#" class="dropdown-item">My Account</a>
+                        <a href="#" class="dropdown-item">Log Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Topbar End -->
+
+
+<!-- Main Header Start -->
+<div class="container-fluid px-5 py-4 d-none d-lg-block">
+    <div class="row gx-0 align-items-center">
+
+        <!-- Logo -->
+        <div class="col-md-4 col-lg-3 text-center text-lg-start">
+            <div class="d-inline-flex align-items-center">
+                <img src="./assets/img/krebers.jpg" alt="Krebers Logo" class="img-fluid"
+                    style="max-height: 60px; object-fit: contain;">
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="col-md-4 col-lg-6 text-center">
+            <div class="position-relative ps-4">
+                <div class="d-flex border rounded-pill overflow-hidden bg-white shadow-sm align-items-center">
+
+                    <!-- SEARCH INPUT -->
+                    <div class="position-relative flex-grow-1">
+                        <input type="text" class="form-control border-0 rounded-pill w-100 py-3 ps-4 pe-5"
+                            placeholder="Search for products, categories, colors..." [formControl]="searchControl" [(ngModel)]="searchQuery"
+                            (keyup.enter)="performSearch()" (focus)="showSuggestions = true" />
+
+                        <!-- Clear Icon -->
+                        <button *ngIf="searchQuery || searchControl.value" type="button" class="btn btn-sm btn-link text-muted position-absolute end-0 top-50 translate-middle-y me-2 text-decoration-none" (click)="clearSearch()">
+                            <i class="fas fa-times-circle fs-5"></i>
+                        </button>
+                    </div>
+
+                    <!-- CATEGORY DROPDOWN -->
+                    <select class="form-select text-dark border-0 border-start p-3 bg-light" [(ngModel)]="searchCategory"
+                        style="width: 170px;">
+                        <option value="">All Categories</option>
+                        <option value="Men">Men Section</option>
+                        <option value="Women">Women Section</option>
+                        <option value="Kids">Kids Section</option>
+                    </select>
+
+                    <!-- SEARCH BUTTON -->
+                    <button type="button" class="btn btn-primary border-0 rounded-pill px-4 py-3" (click)="performSearch()">
+                        <i class="fas fa-search text-white me-1"></i> <span class="d-none d-xl-inline">Search</span>
+                    </button>
+                </div>
+
+                <!-- AUTOCOMPLETE LIVE SUGGESTION LIST -->
+                <ul *ngIf="showSuggestions && (searchControl.value || searchQuery)" class="list-group position-absolute w-100 mt-2 suggestion-list shadow-lg text-start z-3">
+                    <li class="list-group-item list-group-item-action p-3 suggestion-item border-bottom"
+                        *ngFor="let product of suggestions" (click)="selectSuggestion(product)">
+                        <div class="d-flex align-items-center">
+                            <img [src]="product.images[0]" alt="{{ product.name }}" class="rounded me-3 border"
+                                style="width: 55px; height: 55px; object-fit: cover;" />
+                            <div class="flex-grow-1 min-w-0">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h6 class="mb-1 text-truncate font-weight-bold product-title">{{ product.name }}</h6>
+                                    <span class="badge bg-primary rounded-pill ms-2">₦{{ product.currentPrice | number:'1.0-0' }}</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-2 mt-1 flex-wrap">
+                                    <span class="badge bg-secondary text-uppercase search-tag-badge">{{ product.category }} &bull; {{ product.subCategory }}</span>
+                                    <span class="small text-muted" *ngIf="product.color && product.color.length">
+                                        <i class="fas fa-palette me-1"></i>{{ product.color.join(', ') }}
+                                    </span>
+                                    <span class="badge bg-success-subtle text-success border border-success ms-auto" *ngIf="product.qty > 0">In Stock</span>
+                                    <span class="badge bg-danger-subtle text-danger border border-danger ms-auto" *ngIf="product.qty === 0">Out of Stock</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="list-group-item text-center text-muted p-4" *ngIf="suggestions.length === 0">
+                        <i class="fas fa-search-minus fa-2x mb-2 text-secondary d-block"></i>
+                        No products found matching "<strong>{{ searchControl.value || searchQuery }}</strong>"
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+
+        <!-- RIGHT ICONS -->
+        <div class="col-md-4 col-lg-3 text-center text-lg-end">
+            <div class="d-inline-flex align-items-center gap-3">
+
+                <!-- Compare -->
+                <div class="icon-circle">
+                    <i class="fas fa-random"></i>
+                </div>
+
+                <!-- Wishlist -->
+                <div class="icon-circle position-relative cursor-pointer" [routerLink]="['/wishlist']" title="View Wishlist">
+                    <i class="fas fa-heart text-danger"></i>
+                    <span class="cart-badge bg-danger text-white" *ngIf="wishlistCount > 0">
+                        {{ wishlistCount }}
+                    </span>
+                </div>
+
+                <!-- CART -->
+                <div class="icon-circle position-relative" [routerLink]="['/cart']">
+
+                    <!-- Cart Icon -->
+                    <i class="fas fa-shopping-cart"></i>
+
+                    <!-- Count Badge -->
+                    <span class="cart-badge">
+                        {{ cartCount }}
+                    </span>
+                </div>
+
+                <!-- Cart Total -->
+                <span class="cart-total">
+                    {{ cartTotal | fxCurrency }}
+                </span>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Main Header End -->
+
+
+
+<!-- Navbar & Hero Start -->
+<div class="container-fluid nav-bar p-0">
+    <div class="row gx-0 bg-primary px-5 align-items-center">
+        <div class="col-lg-3 d-none d-lg-block">
+            <nav class="navbar navbar-light position-relative" style="width: 250px;">
+                <button class="navbar-toggler border-0 fs-4 w-100 px-0 text-start" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#allCat">
+                    <h4 class="m-0"><i class="fa fa-bars me-2"></i>Collections</h4>
+                </button>
+
+                <div class="collapse navbar-collapse rounded-bottom" id="allCat">
+                    <div class="navbar-nav ms-auto py-0">
+                        <ul class="list-unstyled custom-category-menu">
+
+                            <!-- Men -->
+                            <li class="custom-cat-item dropdown">
+                                <a href="#" class="custom-cat-link dropdown-toggle" data-bs-toggle="dropdown">
+                                    MEN SECTION
+                                </a>
+                                <ul class="dropdown-menu custom-submenu">
+                                    <li><a class="dropdown-item custom-subitem" routerLink="/menShirts">SHIRTS</a></li>
+                                    <li><a class="dropdown-item custom-subitem" routerLink="/menTshirt">T-SHIRTS</a></li>
+                                    <li><a class="dropdown-item custom-subitem" routerLink="/menPants">PANTS</a></li>
+                                    <li><a class="dropdown-item custom-subitem" routerLink="/menHoodies">HOODIES</a></li>
+                                    <li><a class="dropdown-item custom-subitem" routerLink="/menNative">NATIVE-WEARS</a></li>
+                                </ul>
+                            </li>
+
+                            <!-- Women -->
+                            <li class="custom-cat-item dropdown">
+                                <a href="#" class="custom-cat-link dropdown-toggle" data-bs-toggle="dropdown">
+                                    WOMEN SECTION
+                                </a>
+                                <ul class="dropdown-menu custom-submenu">
+                                    <li><a class="dropdown-item custom-subitem" routerLink="/womenJoggers">JOGGERS</a></li>
+                                    <li><a class="dropdown-item custom-subitem" routerLink="/womenTops">TOPS</a></li>
+                                    <li><a class="dropdown-item custom-subitem" routerLink="/womenSkirts">SKIRTS</a></li>
+                                    <li><a class="dropdown-item custom-subitem" routerLink="/womenHoodies">HOODIES</a></li>
+                                    <li><a class="dropdown-item custom-subitem" routerLink="/womenGowns">GOWNS</a></li>
+                                </ul>
+                            </li>
+
+                            <!-- Kids -->
+                            <li class="custom-cat-item dropdown">
+                                <a href="#" class="custom-cat-link dropdown-toggle" data-bs-toggle="dropdown">
+                                    KIDS SECTION
+                                </a>
+                                <ul class="dropdown-menu custom-submenu">
+                                    <li><a class="dropdown-item custom-subitem" routerLink="/kidsTshirt">T-SHIRTS</a></li>
+                                    <li><a class="dropdown-item custom-subitem" routerLink="/kidsShort">SHORTS</a></li>
+                                    <li><a class="dropdown-item custom-subitem" routerLink="/kidsHoodies">HOODIES</a></li>
+                                    <li><a class="dropdown-item custom-subitem" routerLink="/kidsDress">DRESSES</a></li>
+                                    <li><a class="dropdown-item custom-subitem" routerLink="/kidsNative">NATIVE-WEARS</a></li>
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+
+
+            </nav>
+        </div>
+
+        <div class="col-12 col-lg-9">
+            <nav class="navbar navbar-expand-lg navbar-light bg-primary ">
+                <a href="" class="navbar-brand d-block d-lg-none">
+                    <img src="./assets/img/krebers.jpg" alt="Krebers Logo" class="img-fluid"
+                        style="max-height: 60px; object-fit: contain;">
+                </a>
+                <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarCollapse">
+                    <span class="fa fa-bars fa-1x"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav ms-auto py-0">
+                        <a href="/home" class="nav-item nav-link">Home</a>
+                        <a href="/shop" class="nav-item nav-link">Shop</a>
+                        <a href="/wishlist" class="nav-item nav-link">Wishlist</a>
+                        <a href="/cart" class="nav-item nav-link">Cart</a>
+                        <a href="/checkout" class="nav-item nav-link">Checkout</a>
+                        <!-- <a href="/contact" class="nav-item nav-link me-2">Contact Us</a> -->
+                        <!-- Mobile Dropdown -->
+                        <div class="nav-item dropdown d-block d-lg-none mb-3">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                Collections
+                            </a>
+                            <div class="dropdown-menu m-0">
+                                <!-- Men -->
+                                <div class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" href="#">Men</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" routerLink="/menShirts">SHIRTS</a></li>
+                                        <li><a class="dropdown-item" routerLink="/menTshirt">T-SHIRTS</a></li>
+                                        <li><a class="dropdown-item" routerLink="/menPants">PANTS</a></li>
+                                        <li><a class="dropdown-item" routerLink="/menHoodies">HOODIES</a></li>
+                                        <li><a class="dropdown-item" routerLink="/menNative">NATIVE-WEARS</a></li>
+                                    </ul>
+                                </div>
+                                <!-- Women -->
+                                <div class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" href="#">Women</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" routerLink="/womenJoggers">JOGGERS</a></li>
+                                        <li><a class="dropdown-item" routerLink="/womenTops">TOPS</a></li>
+                                        <li><a class="dropdown-item" routerLink="/womenSkirts">SKIRTS</a></li>
+                                        <li><a class="dropdown-item" routerLink="/womenHoodies">HOODIES</a></li>
+                                        <li><a class="dropdown-item" routerLink="/womenGowns">GOWNS</a></li>
+                                    </ul>
+                                </div>
+                                <!-- Children -->
+                                <div class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" [routerLink]="['/shop']" [queryParams]="{ cat: 'Kids' }">Children</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" routerLink="/kidsTshirt">T-SHIRTS</a></li>
+                                        <li><a class="dropdown-item" routerLink="/kidsShort">SHORTS</a></li>
+                                        <li><a class="dropdown-item" routerLink="/kidsHoodies">HOODIES</a></li>
+                                        <li><a class="dropdown-item" routerLink="/kidsDress">DRESSES</a></li>
+                                        <li><a class="dropdown-item" routerLink="/kidsNative">NATIVE-WEARS</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="" class="btn btn-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0"><i
+                            class="fa fa-mobile-alt me-2"></i> (+234) 913 4422 954</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- Navbar & Hero End  -->

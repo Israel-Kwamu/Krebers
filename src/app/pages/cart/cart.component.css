@@ -1,0 +1,5 @@
+.table td, .table th { vertical-align: middle; }
+.input-group.quantity { display: flex; }
+.input-group.quantity button { width: 30px; }
+input.form-control { max-width: 50px; text-align: center; }
+button:focus { outline: none; box-shadow: none; }

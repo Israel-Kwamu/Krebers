@@ -1,0 +1,67 @@
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s">Cart Page</h1>
+    <ol class="breadcrumb justify-content-center mb-0 wow fadeInUp" data-wow-delay="0.3s">
+        <li class="breadcrumb-item"><a href="/home">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+        <li class="breadcrumb-item active text-white">Cart Page</li>
+    </ol>
+</div>
+<!-- Single Page Header End -->
+
+<!-- Cart Page Start -->
+<div class="container py-5" *ngIf="cartItems$ | async as cartItems; else emptyCart">
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Size</th>
+          <th>Color</th>
+          <th>Quantity</th>
+          <th>Total</th>
+          <th>Remove</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of cartItems">
+          <td>{{ item.name }}</td>
+          <td>{{ item.currentPrice | fxCurrency }}</td>
+          <td>{{ item.size}}</td>
+          <td>{{item.color}}</td>
+          <td>
+            <div class="input-group" style="width: 120px;">
+              <button class="btn btn-sm btn-outline-secondary" (click)="decreaseQuantity(item)">-</button>
+              <input type="text" class="form-control text-center" [value]="item.qty" readonly>
+              <button class="btn btn-sm btn-outline-secondary" (click)="increaseQuantity(item)">+</button>
+            </div>
+          </td>
+          <td>{{ (item.currentPrice * (item.qty || 1)) | fxCurrency }}</td>
+          <td>
+            <button class="btn btn-sm btn-danger" (click)="removeItem(item)">
+              <i class="fas fa-times"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Cart Summary -->
+  <div class="mt-4 text-end">
+    <p>Subtotal: {{ getTotal(cartItems) | fxCurrency }}</p>
+    <p>Shipping: {{ shipping | fxCurrency }}</p>
+    <p><strong>Total: {{ (getTotal(cartItems) + shipping) | fxCurrency }}</strong></p>
+    <a routerLink="/checkout" class="btn btn-primary">Proceed to Checkout</a>
+  </div>
+</div>
+
+<ng-template #emptyCart>
+  <div class="text-center py-5">
+    <h4>Your cart is empty.</h4>
+    <a routerLink="/shop" class="btn btn-primary mt-3">Go to Shop</a>
+  </div>
+</ng-template>
+
+<!-- Cart Page End -->

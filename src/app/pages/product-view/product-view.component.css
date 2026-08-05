@@ -1,0 +1,34 @@
+.thumbnail-box {
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.thumbnail-box:hover {
+  transform: translateY(-2px);
+}
+
+.product-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.review-photo-thumb {
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.review-photo-thumb:hover {
+  transform: scale(1.05);
+  filter: brightness(0.95);
+}
+
+.max-h-80vh {
+  max-height: 80vh;
+  object-fit: contain;
+}

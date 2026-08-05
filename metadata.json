@@ -1,0 +1,8 @@
+{
+  "name": "Krebers",
+  "description": "An online fashion store offering clothing for men, women, and kids.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
