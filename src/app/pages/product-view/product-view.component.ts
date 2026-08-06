@@ -4,6 +4,7 @@ import { ProductService } from '../../core/product.service';
 import { CartService } from '../../core/cart.service';
 import { WishlistService } from '../../core/wishlist.service';
 import { RecentlyViewedService } from '../../core/recently-viewed.service';
+import { AuthService } from '../../core/auth.service';
 import { Product, Review } from '../../core/product.model';
 
 @Component({
@@ -16,6 +17,8 @@ export class ProductViewComponent implements OnInit {
   product?: Product;
   quantity = 1;
   recentlyViewed: Product[] = [];
+  selectedSize: string = '';
+  selectedColor: string = '';
 
   // Review form state
   newUserName: string = '';
@@ -38,10 +41,23 @@ export class ProductViewComponent implements OnInit {
     private productService: ProductService,
     public cartService: CartService,
     public wishlistService: WishlistService,
-    private recentlyViewedService: RecentlyViewedService
+    private recentlyViewedService: RecentlyViewedService,
+    public authService: AuthService
   ) {}
 
   ngOnInit(): void {
+    // Auto populate review user info if logged in
+    this.authService.userProfile$.subscribe(prof => {
+      if (prof) {
+        if (!this.newUserName && prof.displayName) {
+          this.newUserName = prof.displayName;
+        }
+        if (!this.newUserEmail && prof.email) {
+          this.newUserEmail = prof.email;
+        }
+      }
+    });
+
     this.route.paramMap.subscribe(params => {
       const idParam = params.get('id');
       if (idParam) {
@@ -50,6 +66,15 @@ export class ProductViewComponent implements OnInit {
         if (this.product) {
           // Track recently viewed
           this.recentlyViewedService.addProduct(this.product);
+          // Initialize selected size and color
+          if (this.product.sizes && this.product.sizes.length) {
+            this.selectedSize = this.product.sizes[0];
+          } else {
+            this.selectedSize = this.product.size;
+          }
+          if (this.product.color && this.product.color.length) {
+            this.selectedColor = this.product.color[0];
+          }
         }
       }
     });
@@ -61,9 +86,22 @@ export class ProductViewComponent implements OnInit {
     });
   }
 
+  selectSize(size: string): void {
+    this.selectedSize = size;
+  }
+
+  selectColor(color: string): void {
+    this.selectedColor = color;
+  }
+
   addToCart(): void {
     if (this.product && this.quantity > 0) {
-      this.cartService.addToCart(this.product, this.quantity);
+      const cartProduct: Product = {
+        ...this.product,
+        selectedSize: this.selectedSize,
+        selectedColor: this.selectedColor
+      };
+      this.cartService.addToCart(cartProduct, this.quantity);
     }
   }
 

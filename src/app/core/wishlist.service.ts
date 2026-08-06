@@ -1,27 +1,43 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Product } from './product.model';
 import { ToastService } from './toast.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WishlistService {
-  private readonly STORAGE_KEY = 'krebers_wishlist';
   private wishlistSubject = new BehaviorSubject<Product[]>([]);
   public wishlist$ = this.wishlistSubject.asObservable();
 
-  constructor(private toastService: ToastService) {
+  constructor(
+    private toastService: ToastService,
+    private authService: AuthService
+  ) {
     this.loadWishlist();
+
+    // Reload wishlist on auth change
+    this.authService.currentUser$.subscribe(() => {
+      this.loadWishlist();
+    });
+  }
+
+  private getStorageKey(): string {
+    const user = this.authService.user;
+    return user ? `krebers_wishlist_${user.uid}` : 'krebers_wishlist_guest';
   }
 
   private loadWishlist(): void {
-    if (typeof window !== 'undefined' && window.localStorage) {
+    if (typeof window !== 'undefined') {
       try {
-        const stored = localStorage.getItem(this.STORAGE_KEY);
+        const key = this.getStorageKey();
+        const stored = localStorage.getItem(key) || localStorage.getItem('krebers_wishlist');
         if (stored) {
           const items: Product[] = JSON.parse(stored);
           this.wishlistSubject.next(items);
+        } else {
+          this.wishlistSubject.next([]);
         }
       } catch (e) {
         console.error('Error loading wishlist from storage', e);
@@ -31,9 +47,11 @@ export class WishlistService {
 
   private saveWishlist(items: Product[]): void {
     this.wishlistSubject.next(items);
-    if (typeof window !== 'undefined' && window.localStorage) {
+    if (typeof window !== 'undefined') {
       try {
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(items));
+        const key = this.getStorageKey();
+        localStorage.setItem(key, JSON.stringify(items));
+        localStorage.setItem('krebers_wishlist', JSON.stringify(items));
       } catch (e) {
         console.error('Error saving wishlist to storage', e);
       }

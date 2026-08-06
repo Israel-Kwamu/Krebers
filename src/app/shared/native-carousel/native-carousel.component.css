@@ -1,0 +1,36 @@
+.native-carousel-wrapper {
+  touch-action: pan-y;
+  user-select: none;
+  width: 100%;
+}
+
+.native-carousel-track {
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+
+.nav-btn {
+  width: 42px;
+  height: 42px;
+  z-index: 10;
+  opacity: 0.85;
+  transition: all 0.25s ease;
+}
+
+.nav-btn:hover {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.dot-btn {
+  width: 10px;
+  height: 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  padding: 0;
+}
+
+.dot-btn.active {
+  width: 28px;
+  background-color: var(--bs-primary, #0d6efd);
+}

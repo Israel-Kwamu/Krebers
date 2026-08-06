@@ -211,4 +211,100 @@ body.dark-mode .products-mini-item .border-top {
   border-color: #334155 !important;
 }
 
+/* ==========================================
+   AUTH MODAL & BRAND STYLING (krebers)
+   ========================================== */
+#authModal .modal-header {
+  background-color: var(--bs-primary, #81c408);
+}
+
+.btn-auth-google {
+  background-color: #ffffff;
+  color: #1e293b;
+  border: 1.5px solid #e2e8f0;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-auth-google:hover {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+.auth-tabs-wrapper {
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
+}
+
+.btn-auth-tab {
+  color: #64748b;
+  background-color: transparent;
+  border: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-auth-tab.active {
+  background-color: #ffffff;
+  color: #0f172a !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Dark mode overrides for Auth Modal */
+body.dark-mode #authModal .modal-content {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border: 1px solid #334155 !important;
+}
+
+body.dark-mode #authModal .modal-body {
+  background-color: #0f172a !important;
+}
+
+body.dark-mode #authModal .text-muted,
+body.dark-mode #authModal label {
+  color: #94a3b8 !important;
+}
+
+body.dark-mode .btn-auth-google {
+  background-color: #1e293b;
+  color: #f8fafc;
+  border-color: #334155;
+}
+
+body.dark-mode .btn-auth-google:hover {
+  background-color: #334155;
+  color: #ffffff;
+}
+
+body.dark-mode .auth-tabs-wrapper {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+body.dark-mode .btn-auth-tab {
+  color: #94a3b8;
+}
+
+body.dark-mode .btn-auth-tab.active {
+  background-color: #0f172a;
+  color: #f8fafc !important;
+}
+
+body.dark-mode #authModal .input-group-text {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+body.dark-mode #authModal .form-control {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+body.dark-mode #authModal .form-control::placeholder {
+  color: #64748b !important;
+}
+
 

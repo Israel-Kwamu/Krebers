@@ -3,9 +3,9 @@
     <div class="row gx-0 align-items-center">
         <div class="col-lg-4 text-center text-lg-start mb-lg-0">
             <div class="d-inline-flex align-items-center" style="height: 45px;">
-                <a href="#" class="text-muted me-2">Help</a><small> / </small>
-                <a href="#" class="text-muted mx-2">Support</a><small> / </small>
-                <a href="/contact" class="text-muted ms-2">Contact</a>
+                <a routerLink="/contact" class="text-muted me-2">Help</a><small> / </small>
+                <a routerLink="/contact" class="text-muted mx-2">Support</a><small> / </small>
+                <a routerLink="/contact" class="text-muted ms-2">Contact</a>
             </div>
         </div>
         <div class="col-lg-4 text-center d-flex align-items-center justify-content-center">
@@ -54,9 +54,11 @@
                   <small class="d-none d-sm-inline">{{ themeService.isDark() ? 'Dark' : 'Light' }}</small>
                 </button>
 
-                <div class="dropdown">
-                    <a href="#" class="dropdown-toggle text-muted mx-2"
-                        data-bs-toggle="dropdown"><small>English</small></a>
+                <div class="dropdown d-flex align-items-center">
+                    <a href="#" class="dropdown-toggle text-muted mx-2 text-decoration-none small d-flex align-items-center gap-1"
+                        data-bs-toggle="dropdown">
+                        <span>English</span>
+                    </a>
                     <div class="dropdown-menu rounded">
                         <a href="#" class="dropdown-item">English</a>
                         <a href="#" class="dropdown-item">Turkish</a>
@@ -65,19 +67,13 @@
                     </div>
                 </div>
 
-                <div class="dropdown">
-                    <a href="#" class="dropdown-toggle text-muted ms-2" data-bs-toggle="dropdown">
-                        <small><i class="fas fa-home me-2"></i> My Dashboard</small>
+                <div class="me-2 d-flex align-items-center ms-3">
+                    <a [routerLink]="(authService.currentUser$ | async) ? '/profile' : '/auth'" class="text-muted text-decoration-none fw-bold d-flex align-items-center gap-1 small">
+                        <i class="fas fa-user-circle text-primary fs-6" *ngIf="!(authService.currentUser$ | async)"></i>
+                        <img *ngIf="authService.userProfile$ | async as prof" [src]="prof.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=50&auto=format&fit=crop&q=80'" 
+                             class="rounded-circle border" style="width: 20px; height: 20px; object-fit: cover;" referrerpolicy="no-referrer">
+                        <span>{{ (authService.userProfile$ | async)?.displayName || 'My Account' }}</span>
                     </a>
-                    <div class="dropdown-menu rounded">
-                        <a href="/login" class="dropdown-item">Login</a>
-                        <a routerLink="/wishlist" class="dropdown-item">Wishlist</a>
-                        <a href="#" class="dropdown-item">My Card</a>
-                        <a href="#" class="dropdown-item">Notifications</a>
-                        <a href="#" class="dropdown-item">Account Settings</a>
-                        <a href="#" class="dropdown-item">My Account</a>
-                        <a href="#" class="dropdown-item">Log Out</a>
-                    </div>
                 </div>
             </div>
         </div>
@@ -182,7 +178,7 @@
                 </div>
 
                 <!-- CART -->
-                <div class="icon-circle position-relative" [routerLink]="['/cart']">
+                <div class="icon-circle position-relative" [routerLink]="['/cart']" title="View Cart">
 
                     <!-- Cart Icon -->
                     <i class="fas fa-shopping-cart"></i>
@@ -192,6 +188,8 @@
                         {{ cartCount }}
                     </span>
                 </div>
+
+
 
                 <!-- Cart Total -->
                 <span class="cart-total">
@@ -272,7 +270,7 @@
 
         <div class="col-12 col-lg-9">
             <nav class="navbar navbar-expand-lg navbar-light bg-primary ">
-                <a href="" class="navbar-brand d-block d-lg-none">
+                <a routerLink="/home" class="navbar-brand d-block d-lg-none">
                     <img src="./assets/img/krebers.jpg" alt="Krebers Logo" class="img-fluid"
                         style="max-height: 60px; object-fit: contain;">
                 </a>
@@ -282,11 +280,12 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto py-0">
-                        <a href="/home" class="nav-item nav-link">Home</a>
-                        <a href="/shop" class="nav-item nav-link">Shop</a>
-                        <a href="/wishlist" class="nav-item nav-link">Wishlist</a>
-                        <a href="/cart" class="nav-item nav-link">Cart</a>
-                        <a href="/checkout" class="nav-item nav-link">Checkout</a>
+                        <a routerLink="/home" routerLinkActive="active" class="nav-item nav-link">Home</a>
+                        <a routerLink="/shop" routerLinkActive="active" class="nav-item nav-link">Shop</a>
+                        <a routerLink="/wishlist" routerLinkActive="active" class="nav-item nav-link">Wishlist</a>
+                        <a routerLink="/cart" routerLinkActive="active" class="nav-item nav-link">Cart</a>
+                        <a routerLink="/checkout" routerLinkActive="active" class="nav-item nav-link">Checkout</a>
+                        <a [routerLink]="(authService.currentUser$ | async) ? '/profile' : '/auth'" routerLinkActive="active" class="nav-item nav-link">My Account</a>
                         <!-- <a href="/contact" class="nav-item nav-link me-2">Contact Us</a> -->
                         <!-- Mobile Dropdown -->
                         <div class="nav-item dropdown d-block d-lg-none mb-3">
@@ -338,3 +337,5 @@
     </div>
 </div>
 <!-- Navbar & Hero End  -->
+
+

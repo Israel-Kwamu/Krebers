@@ -40,6 +40,14 @@ export class ToastService {
     });
   }
 
+  showCustomToast(message: string, type: 'success' | 'info' | 'warning' | 'danger' = 'info'): void {
+    this.show({
+      type,
+      title: 'Notification',
+      message
+    });
+  }
+
   showWishlistToggle(productName: string, added: boolean, image?: string): void {
     if (added) {
       this.show({

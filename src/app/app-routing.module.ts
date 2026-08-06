@@ -7,6 +7,8 @@ import { CheckoutComponent } from './pages/checkout/checkout.component';
 import { CartComponent } from './pages/cart/cart.component';
 import { WishlistComponent } from './pages/wishlist/wishlist.component';
 import { ProductViewComponent } from './pages/product-view/product-view.component';
+import { ProfileComponent } from './pages/profile/profile.component';
+import { AuthComponent } from './pages/auth/auth.component';
 import { KidsNativeComponent } from './pages/kids-section/kids-native/kids-native.component';
 import { KidsHoodiesComponent } from './pages/kids-section/kids-hoodies/kids-hoodies.component';
 import { KidsDressesComponent } from './pages/kids-section/kids-dresses/kids-dresses.component';
@@ -35,6 +37,8 @@ const routes: Routes = [
   { path: 'checkout', component: CheckoutComponent },
   { path: 'cart', component: CartComponent },
   { path: 'wishlist', component: WishlistComponent },
+  { path: 'profile', component: ProfileComponent },
+  { path: 'auth', component: AuthComponent },
   { path: 'product/:id', component: ProductViewComponent },
   { path: 'kidsNative', component: KidsNativeComponent },
   { path: 'kidsHoodies', component: KidsHoodiesComponent },
@@ -58,7 +62,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

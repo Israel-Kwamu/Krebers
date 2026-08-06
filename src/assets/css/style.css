@@ -578,7 +578,9 @@
     border: 1px solid var(--bs-secondary);
 }
   
-.pagination a:hover:not(.active) {background-color: var(--bs-primary)}
+.pagination a:not(.active):hover {
+    background-color: var(--bs-primary);
+}
 
 .nav.nav-tabs .nav-link.active {
     border-bottom: 2px solid var(--bs-secondary) !important;

@@ -1,0 +1,40 @@
+<div class="native-carousel-wrapper position-relative overflow-hidden"
+     (touchstart)="onTouchStart($event)"
+     (touchend)="onTouchEnd($event)"
+     (mouseenter)="autoPlay && stopAutoplay()"
+     (mouseleave)="autoPlay && startAutoplay()">
+
+  <!-- Track Container -->
+  <div class="native-carousel-track d-flex transition-transform"
+       [style.transform]="trackTransform">
+    <ng-content></ng-content>
+  </div>
+
+  <!-- Navigation Buttons -->
+  <button *ngIf="showNav && items.length > itemsPerPage"
+          type="button"
+          class="btn btn-primary rounded-circle shadow position-absolute top-50 start-0 translate-middle-y ms-2 nav-btn prev-btn d-flex align-items-center justify-content-center"
+          (click)="prev()"
+          aria-label="Previous Slide">
+    <i class="fas fa-chevron-left"></i>
+  </button>
+
+  <button *ngIf="showNav && items.length > itemsPerPage"
+          type="button"
+          class="btn btn-primary rounded-circle shadow position-absolute top-50 end-0 translate-middle-y me-2 nav-btn next-btn d-flex align-items-center justify-content-center"
+          (click)="next()"
+          aria-label="Next Slide">
+    <i class="fas fa-chevron-right"></i>
+  </button>
+
+  <!-- Dots Pagination -->
+  <div *ngIf="showDots && pages.length > 1" class="d-flex justify-content-center gap-2 mt-3">
+    <button *ngFor="let page of pages; let i = index"
+            type="button"
+            class="dot-btn rounded-pill border-0 transition-all"
+            [class.active]="i === currentPage"
+            (click)="goToPage(i)"
+            [attr.aria-label]="'Go to slide ' + (i + 1)">
+    </button>
+  </div>
+</div>

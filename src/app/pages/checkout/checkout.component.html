@@ -1,218 +1,262 @@
 <!-- Single Page Header start -->
 <div class="container-fluid page-header py-5">
-  <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s">Checkout Page</h1>
+  <h1 class="text-center text-white display-6 fw-bold">Secure Checkout</h1>
 </div>
 <!-- Single Page Header End -->
 
 <!-- Services Start -->
-<div class="container-fluid px-0">
-  <div class="row g-0">
-    <div class="col-6 col-md-4 col-lg-2 border-start border-end wow fadeInUp" data-wow-delay="0.1s">
-      <div class="p-4">
-        <div class="d-inline-flex align-items-center">
-          <i class="fa fa-sync-alt fa-2x text-primary"></i>
-          <div class="ms-4">
-            <h6 class="text-uppercase mb-2">Free Return</h6>
-            <p class="mb-0">30 days money back guarantee!</p>
-          </div>
-        </div>
-      </div>
+<div class="container-fluid px-0 bg-white border-bottom">
+  <div class="row g-0 text-center">
+    <div class="col-6 col-md-3 border-end p-3">
+      <i class="fas fa-shield-alt text-primary fs-4 mb-2 d-block"></i>
+      <h6 class="text-uppercase mb-1 small fw-bold">256-Bit SSL Encrypted</h6>
+      <p class="mb-0 text-muted extra-small">Your data is completely safe</p>
     </div>
-    <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.2s">
-      <div class="p-4">
-        <div class="d-flex align-items-center">
-          <i class="fab fa-telegram-plane fa-2x text-primary"></i>
-          <div class="ms-4">
-            <h6 class="text-uppercase mb-2">Free Shipping</h6>
-            <p class="mb-0">Free shipping on all order</p>
-          </div>
-        </div>
-      </div>
+    <div class="col-6 col-md-3 border-end p-3">
+      <i class="fas fa-truck text-primary fs-4 mb-2 d-block"></i>
+      <h6 class="text-uppercase mb-1 small fw-bold">Express Nationwide Shipping</h6>
+      <p class="mb-0 text-muted extra-small">Fast 24-48 hr door delivery</p>
     </div>
-    <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.3s">
-      <div class="p-4">
-        <div class="d-flex align-items-center">
-          <i class="fas fa-life-ring fa-2x text-primary"></i>
-          <div class="ms-4">
-            <h6 class="text-uppercase mb-2">Support 24/7</h6>
-            <p class="mb-0">We support online 24 hrs a day</p>
-          </div>
-        </div>
-      </div>
+    <div class="col-6 col-md-3 border-end p-3">
+      <i class="fas fa-undo text-primary fs-4 mb-2 d-block"></i>
+      <h6 class="text-uppercase mb-1 small fw-bold">Hassle-Free Returns</h6>
+      <p class="mb-0 text-muted extra-small">Easy 14-day exchange guarantee</p>
     </div>
-    <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.4s">
-      <div class="p-4">
-        <div class="d-flex align-items-center">
-          <i class="fas fa-credit-card fa-2x text-primary"></i>
-          <div class="ms-4">
-            <h6 class="text-uppercase mb-2">Receive Gift Card</h6>
-            <p class="mb-0">Recieve gift all over oder $50</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.5s">
-      <div class="p-4">
-        <div class="d-flex align-items-center">
-          <i class="fas fa-lock fa-2x text-primary"></i>
-          <div class="ms-4">
-            <h6 class="text-uppercase mb-2">Secure Payment</h6>
-            <p class="mb-0">We Value Your Security</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.6s">
-      <div class="p-4">
-        <div class="d-flex align-items-center">
-          <i class="fas fa-blog fa-2x text-primary"></i>
-          <div class="ms-4">
-            <h6 class="text-uppercase mb-2">Online Service</h6>
-            <p class="mb-0">Free return products in 30 days</p>
-          </div>
-        </div>
-      </div>
+    <div class="col-6 col-md-3 p-3">
+      <i class="fas fa-headset text-primary fs-4 mb-2 d-block"></i>
+      <h6 class="text-uppercase mb-1 small fw-bold">24/7 Priority Support</h6>
+      <p class="mb-0 text-muted extra-small">Dedicated customer care</p>
     </div>
   </div>
 </div>
 <!-- Services End -->
 
-
 <!-- Checkout Page Start -->
-<div class="container-fluid bg-light overflow-hidden py-5">
-  <div class="container py-5">
-    <h1 class="mb-4">Billing Details</h1>
-    <form>
-      <div class="row g-5">
+<div class="container-fluid bg-light py-5">
+  <div class="container py-3">
+
+    <div class="alert alert-info rounded-3 mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3 border-0 shadow-sm p-3" *ngIf="authService.isLoggedIn; else guestAlert">
+      <div class="d-flex align-items-center gap-3">
+        <i class="fas fa-user-check text-primary fs-3"></i>
+        <div>
+          <div class="fw-bold text-dark">Signed in as {{ email || authService.user?.email }}</div>
+          <small class="text-muted">Your saved delivery details & address have been automatically pre-filled.</small>
+        </div>
+      </div>
+      <a routerLink="/profile" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold">View Saved Profile</a>
+    </div>
+
+    <ng-template #guestAlert>
+      <div class="alert alert-warning rounded-3 mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3 border-0 shadow-sm p-3">
+        <div class="d-flex align-items-center gap-3">
+          <i class="fas fa-info-circle text-warning fs-3"></i>
+          <div>
+            <div class="fw-bold text-dark">Checking out as Guest</div>
+            <small class="text-dark">Have an account? Sign in for 1-click address autofill and reward points.</small>
+          </div>
+        </div>
+        <a routerLink="/auth" class="btn btn-sm btn-dark rounded-pill px-4 fw-bold">
+          Sign In Now
+        </a>
+      </div>
+    </ng-template>
+
+    <form (ngSubmit)="placeOrder()">
+      <div class="row g-4">
 
         <!-- Billing Details Form -->
-        <div class="col-md-12 col-lg-6">
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-item mb-3">
-                <label class="form-label">First Name <sup>*</sup></label>
-                <input type="text" class="form-control">
+        <div class="col-lg-7">
+          <div class="bg-white p-4 p-md-5 rounded-4 shadow-sm border mb-4">
+            <h4 class="fw-bold text-dark mb-4 pb-2 border-bottom d-flex align-items-center justify-content-between">
+              <span><i class="fas fa-map-marker-alt text-primary me-2"></i> Shipping & Billing Address</span>
+              <span class="badge bg-primary-subtle text-primary extra-small px-3 py-2 rounded-pill fw-semibold">Step 1 of 2</span>
+            </h4>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-dark small">First Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control form-control-lg fs-6 rounded-3" placeholder="John" [(ngModel)]="firstName" name="firstName" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-dark small">Last Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control form-control-lg fs-6 rounded-3" placeholder="Doe" [(ngModel)]="lastName" name="lastName">
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-bold text-dark small">Company Name (Optional)</label>
+                <input type="text" class="form-control form-control-lg fs-6 rounded-3" placeholder="Company or Organization" [(ngModel)]="companyName" name="companyName">
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-bold text-dark small">Street Address <span class="text-danger">*</span></label>
+                <input type="text" class="form-control form-control-lg fs-6 rounded-3" placeholder="House / Flat Number, Street Name, Estate" [(ngModel)]="address" name="address" required>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-dark small">Town / City <span class="text-danger">*</span></label>
+                <input type="text" class="form-control form-control-lg fs-6 rounded-3" placeholder="Lagos, Abuja, Port Harcourt..." [(ngModel)]="city" name="city">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-dark small">Country <span class="text-danger">*</span></label>
+                <input type="text" class="form-control form-control-lg fs-6 rounded-3" [(ngModel)]="country" name="country">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-dark small">Postcode / ZIP</label>
+                <input type="text" class="form-control form-control-lg fs-6 rounded-3" placeholder="100001" [(ngModel)]="zipCode" name="zipCode">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-dark small">Phone Number <span class="text-danger">*</span></label>
+                <input type="tel" class="form-control form-control-lg fs-6 rounded-3" placeholder="+234 800 000 0000" [(ngModel)]="phone" name="phone" required>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-bold text-dark small">Email Address <span class="text-danger">*</span></label>
+                <input type="email" class="form-control form-control-lg fs-6 rounded-3" placeholder="john.doe@example.com" [(ngModel)]="email" name="email">
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-bold text-dark small">Special Delivery Notes (Optional)</label>
+                <textarea class="form-control fs-6 rounded-3" rows="3" placeholder="Notes about your order, e.g. special instructions for delivery runner." [(ngModel)]="notes" name="notes"></textarea>
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="form-item mb-3">
-                <label class="form-label">Last Name <sup>*</sup></label>
-                <input type="text" class="form-control">
-              </div>
-            </div>
-          </div>
-
-          <div class="form-item mb-3">
-            <label class="form-label">Company Name</label>
-            <input type="text" class="form-control">
-          </div>
-
-          <div class="form-item mb-3">
-            <label class="form-label">Address <sup>*</sup></label>
-            <input type="text" class="form-control" placeholder="House number, Street name">
-          </div>
-
-          <div class="form-item mb-3">
-            <label class="form-label">Town/City <sup>*</sup></label>
-            <input type="text" class="form-control">
-          </div>
-
-          <div class="form-item mb-3">
-            <label class="form-label">Country <sup>*</sup></label>
-            <input type="text" class="form-control">
-          </div>
-
-          <div class="form-item mb-3">
-            <label class="form-label">Postcode / ZIP <sup>*</sup></label>
-            <input type="text" class="form-control">
-          </div>
-
-          <div class="form-item mb-3">
-            <label class="form-label">Mobile <sup>*</sup></label>
-            <input type="tel" class="form-control">
-          </div>
-
-          <div class="form-item mb-3">
-            <label class="form-label">Email Address <sup>*</sup></label>
-            <input type="email" class="form-control">
-          </div>
-
-          <div class="form-check my-3">
-            <input type="checkbox" class="form-check-input" id="createAccount">
-            <label class="form-check-label" for="createAccount">Create an account?</label>
-          </div>
-
-          <hr>
-
-          <div class="form-check my-3">
-            <input type="checkbox" class="form-check-input" id="differentAddress">
-            <label class="form-check-label" for="differentAddress">Ship to a different address?</label>
-          </div>
-
-          <div class="form-item mb-3">
-            <textarea class="form-control" cols="30" rows="5" placeholder="Order Notes (Optional)"></textarea>
           </div>
         </div>
 
-        <!-- Order Summary -->
-        <div class="col-md-12 col-lg-6">
-          <div class="table-responsive">
-            <table class="table">
-              <thead>
-                <tr class="text-center">
-                  <th scope="col" class="text-start">Product</th>
-                  <th scope="col">Size</th>
-                  <th scope="col">Color</th>
-                  <th scope="col">Price</th>
-                  <th scope="col">Qty</th>
-                  <th scope="col">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let item of cartItems" class="text-center">
-                  <th scope="row" class="text-start py-4">{{ item.name }}</th>
-                  <td class="py-4">{{ item.size || '-' }}</td>
-                  <td class="py-4">{{item.color}}</td>
-                  <td class="py-4">{{ item.currentPrice | fxCurrency }}</td>
-                  <td class="py-4">{{ item.qty }}</td>
-                  <td class="py-4">{{ (item.currentPrice * item.qty) | fxCurrency }}</td>
-                </tr>
+        <!-- Order Summary & Payment -->
+        <div class="col-lg-5">
+          <div class="bg-white p-4 p-md-5 rounded-4 shadow-sm border position-sticky" style="top: 100px;">
+            <h4 class="fw-bold text-dark mb-4 pb-2 border-bottom d-flex align-items-center justify-content-between">
+              <span><i class="fas fa-shopping-bag text-primary me-2"></i> Order Summary</span>
+              <span class="badge bg-dark rounded-pill">{{ cartItems.length }} {{ cartItems.length === 1 ? 'item' : 'items' }}</span>
+            </h4>
 
-                <!-- Subtotal -->
-                <tr>
-                  <td colspan="4" class="text-end py-2">Subtotal</td>
-                  <td class="py-2">{{ getSubtotal() | fxCurrency }}</td>
-                </tr>
-
-                <!-- Shipping -->
-                <tr>
-                  <td colspan="4" class="text-end py-2">Shipping</td>
-                  <td class="py-2">{{ getShipping() | fxCurrency }}</td>
-                </tr>
-
-                <!-- Total -->
-                <tr>
-                  <td colspan="4" class="text-end py-2"><strong>Total</strong></td>
-                  <td class="py-2"><strong>{{ getTotal() | fxCurrency }}</strong></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Payment Options -->
-          <div class="mt-4">
-            <div *ngFor="let method of ['Direct Bank Transfer','Check Payments','Cash On Delivery','Paypal']"
-              class="form-check mb-2">
-              <input type="radio" class="form-check-input" [id]="method" name="payment" value="{{method}}">
-              <label class="form-check-label" [for]="method">{{method}}</label>
+            <!-- Item List Preview -->
+            <div class="order-items-scroll max-vh-40 overflow-auto mb-4 pe-1">
+              <div *ngFor="let item of cartItems" class="d-flex align-items-center justify-content-between py-2 border-bottom">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="position-relative">
+                    <img [src]="item.images[0]" [alt]="item.name" class="rounded-3 border object-fit-cover" style="width: 52px; height: 52px;" referrerpolicy="no-referrer">
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">{{ item.qty || 1 }}</span>
+                  </div>
+                  <div>
+                    <h6 class="mb-0 text-dark fw-bold small text-truncate" style="max-width: 180px;">{{ item.name }}</h6>
+                    <span class="text-muted extra-small">
+                      <span *ngIf="item.selectedSize || item.size">Size: {{ item.selectedSize || item.size }}</span>
+                      <span *ngIf="item.selectedColor"> | Color: {{ item.selectedColor }}</span>
+                    </span>
+                  </div>
+                </div>
+                <span class="fw-bold text-dark small">{{ ((item.currentPrice || 0) * (item.qty || 1)) | fxCurrency }}</span>
+              </div>
             </div>
-          </div>
 
-          <!-- Place Order Button -->
-          <div class="mt-4">
-            <button type="button" class="btn btn-primary w-100 text-uppercase">Place Order</button>
-          </div>
+            <!-- Coupon Code Section -->
+            <div class="mb-4 bg-light p-3 rounded-3 border">
+              <label class="form-label fw-bold text-dark extra-small mb-2 d-block">
+                <i class="fas fa-ticket-alt text-primary me-1"></i> Promo or Gift Code
+              </label>
+              <div class="input-group" *ngIf="!appliedCoupon; else appliedCouponTemplate">
+                <input type="text" class="form-control form-control-sm uppercase" placeholder="e.g. KREBERS10" [(ngModel)]="couponInput" name="couponInput">
+                <button type="button" class="btn btn-sm btn-dark fw-bold px-3" (click)="applyCoupon()">Apply</button>
+              </div>
+              <ng-template #appliedCouponTemplate>
+                <div class="d-flex align-items-center justify-content-between bg-white p-2 rounded border border-success">
+                  <span class="badge bg-success me-2">{{ appliedCoupon?.code }}</span>
+                  <span class="small fw-bold text-success text-truncate me-2">{{ appliedCoupon?.name }}</span>
+                  <button type="button" class="btn btn-sm text-danger p-0 fw-bold" (click)="removeCoupon()">×</button>
+                </div>
+              </ng-template>
+              <small class="text-muted extra-small d-block mt-1">Try codes: <strong>KREBERS10</strong> (10% off) or <strong>FREESHIP</strong></small>
+            </div>
 
+            <!-- Price Breakdown -->
+            <div class="border-top pt-3 mb-4">
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted small">Subtotal</span>
+                <span class="fw-semibold text-dark small">{{ getSubtotal() | fxCurrency }}</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted small">Standard Shipping</span>
+                <span class="fw-semibold text-dark small" *ngIf="getShipping() > 0; else freeShipText">
+                  {{ getShipping() | fxCurrency }}
+                </span>
+                <ng-template #freeShipText>
+                  <span class="badge bg-success">FREE</span>
+                </ng-template>
+              </div>
+              <div class="d-flex justify-content-between mb-2 text-success" *ngIf="getDiscountAmount() > 0">
+                <span class="small fw-bold">Promo Discount</span>
+                <span class="small fw-bold">-{{ getDiscountAmount() | fxCurrency }}</span>
+              </div>
+              <div class="d-flex justify-content-between border-top pt-3 mt-2">
+                <span class="fw-bold text-dark fs-5">Total Payable</span>
+                <span class="fw-bold text-primary fs-4">{{ getTotal() | fxCurrency }}</span>
+              </div>
+            </div>
+
+            <!-- Payment Options -->
+            <div class="mb-4">
+              <label class="form-label fw-bold text-dark small mb-3">Select Payment Method</label>
+              
+              <div class="d-flex flex-column gap-2">
+                <label class="border rounded-3 p-3 cursor-pointer d-flex align-items-center justify-content-between transition-all"
+                       [class.border-primary]="paymentMethod === 'Card / Paystack Online'"
+                       [class.bg-primary-subtle]="paymentMethod === 'Card / Paystack Online'">
+                  <div class="d-flex align-items-center gap-3">
+                    <input type="radio" name="payment" value="Card / Paystack Online" [(ngModel)]="paymentMethod" class="form-check-input">
+                    <div>
+                      <span class="fw-bold text-dark d-block small">Debit/Credit Card (Paystack)</span>
+                      <span class="extra-small text-muted">Instant online approval via Mastercard, Visa, Verve</span>
+                    </div>
+                  </div>
+                  <i class="fas fa-credit-card text-primary fs-5"></i>
+                </label>
+
+                <label class="border rounded-3 p-3 cursor-pointer d-flex align-items-center justify-content-between transition-all"
+                       [class.border-primary]="paymentMethod === 'Direct Bank Transfer'"
+                       [class.bg-primary-subtle]="paymentMethod === 'Direct Bank Transfer'">
+                  <div class="d-flex align-items-center gap-3">
+                    <input type="radio" name="payment" value="Direct Bank Transfer" [(ngModel)]="paymentMethod" class="form-check-input">
+                    <div>
+                      <span class="fw-bold text-dark d-block small">Direct Bank Transfer</span>
+                      <span class="extra-small text-muted">Instant bank transfer details shown upon confirmation</span>
+                    </div>
+                  </div>
+                  <i class="fas fa-university text-primary fs-5"></i>
+                </label>
+
+                <label class="border rounded-3 p-3 cursor-pointer d-flex align-items-center justify-content-between transition-all"
+                       [class.border-primary]="paymentMethod === 'Cash On Delivery'"
+                       [class.bg-primary-subtle]="paymentMethod === 'Cash On Delivery'">
+                  <div class="d-flex align-items-center gap-3">
+                    <input type="radio" name="payment" value="Cash On Delivery" [(ngModel)]="paymentMethod" class="form-check-input">
+                    <div>
+                      <span class="fw-bold text-dark d-block small">Pay on Delivery</span>
+                      <span class="extra-small text-muted">Pay cash or POS upon item arrival</span>
+                    </div>
+                  </div>
+                  <i class="fas fa-money-bill-wave text-success fs-5"></i>
+                </label>
+              </div>
+            </div>
+
+            <!-- Submit Order Button -->
+            <button type="submit" class="btn btn-primary w-100 text-uppercase py-3 fs-6 fw-bold rounded-pill shadow" [disabled]="isPlacingOrder || cartItems.length === 0">
+              <span class="spinner-border spinner-border-sm me-2" *ngIf="isPlacingOrder"></span>
+              <span>{{ isPlacingOrder ? 'Processing Order...' : 'Confirm & Place Order' }}</span>
+            </button>
+
+            <!-- Guarantee Badges -->
+            <div class="text-center mt-3 pt-2 border-top">
+              <p class="extra-small text-muted mb-0">
+                <i class="fas fa-lock text-success me-1"></i> Guaranteed 100% Safe Checkout with Krebers Assurance
+              </p>
+            </div>
+
+          </div>
         </div>
 
       </div>

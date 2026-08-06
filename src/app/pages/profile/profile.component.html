@@ -1,0 +1,377 @@
+<!-- Single Page Header Start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">My Account & Saved Profile</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a routerLink="/" class="text-white">Home</a></li>
+        <li class="breadcrumb-item active text-white">Profile</li>
+    </ol>
+</div>
+<!-- Single Page Header End -->
+
+<div class="container py-5">
+
+        <div class="row g-4" *ngIf="authService.userProfile$ | async as userProf; else loadingState">
+            
+            <!-- Sidebar Navigation -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4 bg-white">
+                    <div class="card-body p-4 text-center border-bottom bg-light">
+                        <div class="position-relative d-inline-block mb-3">
+                            <img [src]="userProf.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'" 
+                                 class="rounded-circle img-thumbnail shadow" 
+                                 style="width: 110px; height: 110px; object-fit: cover;"
+                                 alt="Profile Avatar"
+                                 referrerpolicy="no-referrer">
+                            <span class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle p-2" title="Online & Connected"></span>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-1">{{ userProf.displayName || 'Valued Customer' }}</h5>
+                        <p class="text-muted small mb-2"><i class="fas fa-envelope me-1"></i> {{ userProf.email }}</p>
+                        <span class="badge bg-primary-subtle text-primary border border-primary px-3 py-1 rounded-pill small">
+                            <i class="fab fa-google text-danger me-1"></i> Google Verified Profile
+                        </span>
+                    </div>
+
+                    <div class="list-group list-group-flush p-2">
+                        <button type="button" 
+                                class="list-group-item list-group-item-action border-0 rounded-3 py-3 px-3 d-flex align-items-center gap-3 fw-bold my-1"
+                                [class.active]="activeTab === 'profile'"
+                                (click)="activeTab = 'profile'">
+                            <i class="fas fa-user-edit fs-5"></i>
+                            <span>Profile & Saved Address</span>
+                        </button>
+
+                        <button type="button" 
+                                class="list-group-item list-group-item-action border-0 rounded-3 py-3 px-3 d-flex align-items-center gap-3 fw-bold my-1"
+                                [class.active]="activeTab === 'orders'"
+                                (click)="activeTab = 'orders'; loadOrders()">
+                            <i class="fas fa-box-open fs-5"></i>
+                            <span>Order History</span>
+                            <span class="badge bg-primary rounded-pill ms-auto" *ngIf="orders.length">{{ orders.length }}</span>
+                        </button>
+
+                        <a routerLink="/wishlist" 
+                           class="list-group-item list-group-item-action border-0 rounded-3 py-3 px-3 d-flex align-items-center gap-3 fw-bold my-1 text-dark text-decoration-none">
+                            <i class="fas fa-heart text-danger fs-5"></i>
+                            <span>My Saved Wishlist</span>
+                        </a>
+
+                        <a routerLink="/cart" 
+                           class="list-group-item list-group-item-action border-0 rounded-3 py-3 px-3 d-flex align-items-center gap-3 fw-bold my-1 text-dark text-decoration-none">
+                            <i class="fas fa-shopping-bag text-primary fs-5"></i>
+                            <span>Shopping Cart</span>
+                        </a>
+
+                        <button type="button" 
+                                (click)="logout()"
+                                class="list-group-item list-group-item-action border-0 rounded-3 py-3 px-3 d-flex align-items-center gap-3 fw-bold text-danger my-1">
+                            <i class="fas fa-sign-out-alt fs-5"></i>
+                            <span>Sign Out</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="col-lg-8">
+
+                <!-- Tab 1: Profile & Address Form -->
+                <div class="card border-0 shadow-sm rounded-4 bg-white p-4" *ngIf="activeTab === 'profile'">
+                    <h4 class="fw-bold text-dark mb-4 border-bottom pb-3 d-flex align-items-center gap-2">
+                        <i class="fas fa-id-card text-primary"></i> Personal Information & Address
+                    </h4>
+
+                    <form (ngSubmit)="saveProfile()">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-dark">Full Name</label>
+                                <input type="text" class="form-control rounded-3 py-2" [(ngModel)]="profile.displayName" name="displayName" placeholder="Your Full Name">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-dark">Email Address</label>
+                                <input type="email" class="form-control rounded-3 py-2 bg-light" [value]="profile.email" disabled title="Managed by Login Provider">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-dark">Phone Number</label>
+                                <input type="tel" class="form-control rounded-3 py-2" [(ngModel)]="profile.phone" name="phone" placeholder="+234 800 000 0000">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-dark">Country</label>
+                                <input type="text" class="form-control rounded-3 py-2" [(ngModel)]="profile.country" name="country" placeholder="Nigeria">
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-semibold text-dark">Shipping Street Address</label>
+                                <textarea class="form-control rounded-3" rows="2" [(ngModel)]="profile.address" name="address" placeholder="House/Apartment Number, Street Name"></textarea>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold text-dark">City</label>
+                                <input type="text" class="form-control rounded-3 py-2" [(ngModel)]="profile.city" name="city" placeholder="Lagos">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold text-dark">State / Region</label>
+                                <input type="text" class="form-control rounded-3 py-2" [(ngModel)]="profile.state" name="state" placeholder="Lagos State">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold text-dark">Postal / Zip Code</label>
+                                <input type="text" class="form-control rounded-3 py-2" [(ngModel)]="profile.zipCode" name="zipCode" placeholder="100001">
+                            </div>
+
+                            <div class="col-12 mt-4 pt-2 text-end border-top">
+                                <button type="submit" class="btn btn-primary rounded-pill px-5 py-2.5 fw-bold shadow-sm" [disabled]="isSaving">
+                                    <i class="fas fa-save me-2" *ngIf="!isSaving"></i>
+                                    <span class="spinner-border spinner-border-sm me-2" *ngIf="isSaving"></span>
+                                    <span>{{ isSaving ? 'Saving...' : 'Save Profile Changes' }}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Tab 2: Orders History -->
+                <div class="card border-0 shadow-sm rounded-4 bg-white p-4" *ngIf="activeTab === 'orders'">
+                    <h4 class="fw-bold text-dark mb-4 border-bottom pb-3 d-flex align-items-center gap-2">
+                        <i class="fas fa-history text-primary"></i> Your Order History
+                    </h4>
+
+                    <div *ngIf="loadingOrders" class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="text-muted mt-2">Loading your orders from cloud storage...</p>
+                    </div>
+
+                    <div *ngIf="!loadingOrders && orders.length === 0" class="text-center py-5">
+                        <i class="fas fa-box-open text-muted display-3 mb-3"></i>
+                        <h5 class="fw-bold text-dark">No orders placed yet!</h5>
+                        <p class="text-muted">Explore our catalog and place your first order with ease.</p>
+                        <a routerLink="/shop" class="btn btn-primary rounded-pill px-4 py-2 mt-2 fw-bold">Start Shopping</a>
+                    </div>
+
+                    <div *ngIf="!loadingOrders && orders.length > 0" class="d-flex flex-column gap-3">
+                        <div *ngFor="let order of orders" class="card border rounded-3 p-3 shadow-none bg-light">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                                <div>
+                                    <span class="fw-bold text-dark">Order ID: #{{ order.id?.substring(0, 8) }}</span>
+                                    <div class="small text-muted"><i class="far fa-calendar-alt me-1"></i> {{ order.createdAt | date:'mediumDate' }} at {{ order.createdAt | date:'shortTime' }}</div>
+                                </div>
+                                <div class="text-end mt-2 mt-sm-0 d-flex flex-wrap align-items-center justify-content-end gap-2">
+                                    <button type="button" class="btn btn-sm btn-outline-dark rounded-pill px-3 py-1 fw-bold" (click)="openReceiptModal(order)">
+                                        <i class="fas fa-file-invoice me-1"></i> Receipt PDF
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-primary rounded-pill px-3 py-1 fw-bold" (click)="openOrderTracker(order)">
+                                        <i class="fas fa-truck me-1"></i> Track Order
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 fw-bold" (click)="reorderItems(order)" title="Add these items to your current cart">
+                                        <i class="fas fa-redo me-1"></i> Reorder
+                                    </button>
+                                    <span class="badge bg-success text-white px-3 py-1 rounded-pill fw-semibold">{{ order.status }}</span>
+                                    <div class="fw-bold text-primary fs-5 ms-2">{{ order.total | fxCurrency }}</div>
+                                </div>
+                            </div>
+
+                            <!-- Purchased items -->
+                            <div class="d-flex flex-column gap-2">
+                                <div *ngFor="let item of order.items" class="d-flex align-items-center gap-3 bg-white p-2 rounded border">
+                                    <img [src]="item.images[0]" [alt]="item.name" class="rounded object-fit-cover" style="width: 50px; height: 50px;" referrerpolicy="no-referrer">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0 text-dark fw-bold">{{ item.name }}</h6>
+                                        <span class="small text-muted">Qty: {{ item.qty || 1 }} &bull; {{ item.currentPrice | fxCurrency }} each</span>
+                                    </div>
+                                    <div class="fw-bold text-dark">
+                                        {{ (item.currentPrice * (item.qty || 1)) | fxCurrency }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TRACK ORDER MODAL -->
+        <div *ngIf="selectedTrackOrder" class="modal fade show d-block" style="background: rgba(0,0,0,0.6); z-index: 1055;" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+                    <div class="modal-header bg-primary text-white p-4">
+                        <h5 class="modal-title fw-bold">
+                            <i class="fas fa-shipping-fast me-2"></i> Real-Time Package Tracker
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" (click)="closeOrderTracker()"></button>
+                    </div>
+                    <div class="modal-body p-4 bg-light">
+                        <div class="bg-white p-3 rounded-3 border mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <div>
+                                <span class="text-muted small d-block">Tracking Reference</span>
+                                <span class="fw-bold text-dark fs-6">KB-TRK-{{ selectedTrackOrder.id?.substring(0, 8) }}</span>
+                            </div>
+                            <div>
+                                <span class="text-muted small d-block">Logistics Partner</span>
+                                <span class="fw-bold text-dark fs-6"><i class="fas fa-box text-primary me-1"></i> Krebers Express Direct</span>
+                            </div>
+                            <div>
+                                <span class="text-muted small d-block">Estimated Arrival</span>
+                                <span class="fw-bold text-success fs-6"><i class="far fa-clock me-1"></i> Within 24-48 Hours</span>
+                            </div>
+                        </div>
+
+                        <!-- Timeline Progress Bar -->
+                        <div class="position-relative my-4 px-3">
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 65%;"></div>
+                            </div>
+                            <div class="d-flex justify-content-between position-relative mt-n3">
+                                <div class="text-center">
+                                    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow" style="width: 32px; height: 32px;">
+                                        <i class="fas fa-check small"></i>
+                                    </div>
+                                    <span class="d-block small fw-bold text-dark mt-2">Placed</span>
+                                </div>
+                                <div class="text-center">
+                                    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow" style="width: 32px; height: 32px;">
+                                        <i class="fas fa-box small"></i>
+                                    </div>
+                                    <span class="d-block small fw-bold text-dark mt-2">Processing</span>
+                                </div>
+                                <div class="text-center">
+                                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow" style="width: 32px; height: 32px;">
+                                        <i class="fas fa-truck small"></i>
+                                    </div>
+                                    <span class="d-block small fw-bold text-primary mt-2">In Transit</span>
+                                </div>
+                                <div class="text-center">
+                                    <div class="bg-secondary text-white rounded-circle d-inline-flex align-items-center justify-content-center opacity-50" style="width: 32px; height: 32px;">
+                                        <i class="fas fa-home small"></i>
+                                    </div>
+                                    <span class="d-block small text-muted mt-2">Delivered</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Items in package -->
+                        <h6 class="fw-bold text-dark mt-4 mb-2">Package Contents ({{ selectedTrackOrder.items.length }} items)</h6>
+                        <div class="list-group">
+                            <div *ngFor="let item of selectedTrackOrder.items" class="list-group-item d-flex align-items-center justify-content-between p-2">
+                                <div class="d-flex align-items-center gap-3">
+                                    <img [src]="item.images[0]" [alt]="item.name" class="rounded" style="width: 40px; height: 40px; object-fit: cover;">
+                                    <div>
+                                        <h6 class="mb-0 small fw-bold text-dark">{{ item.name }}</h6>
+                                        <span class="text-muted extra-small">Quantity: {{ item.qty || 1 }}</span>
+                                    </div>
+                                </div>
+                                <span class="badge bg-light text-dark border">{{ item.currentPrice | fxCurrency }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-white p-3">
+                        <button type="button" class="btn btn-secondary rounded-pill px-4" (click)="closeOrderTracker()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIGITAL INVOICE RECEIPT MODAL -->
+        <div *ngIf="selectedReceiptOrder" class="modal fade show d-block" style="background: rgba(0,0,0,0.6); z-index: 1055;" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+                    <div class="modal-header bg-dark text-white p-4">
+                        <h5 class="modal-title fw-bold">
+                            <i class="fas fa-file-invoice text-primary me-2"></i> Krebers Store Digital Receipt
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" (click)="closeReceiptModal()"></button>
+                    </div>
+                    <div class="modal-body p-4 p-md-5 bg-white id-printable-area">
+                        <!-- Invoice Header -->
+                        <div class="d-flex justify-content-between align-items-start border-bottom pb-4 mb-4 flex-wrap gap-3">
+                            <div>
+                                <h2 class="text-primary fw-bold text-uppercase tracking-wider mb-1">Krebers Store</h2>
+                                <p class="text-muted small mb-0">Premium Fashion & Native Apparel</p>
+                                <p class="text-muted small mb-0">Victoria Island, Lagos, Nigeria</p>
+                                <p class="text-muted small mb-0">Support: info&#64;krebers.com | +234 800 KREBERS</p>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-success text-white fs-6 px-3 py-2 rounded-pill mb-2">OFFICIAL INVOICE</span>
+                                <h5 class="fw-bold text-dark mb-1">Receipt #{{ selectedReceiptOrder.id }}</h5>
+                                <p class="text-muted small mb-0">Date: {{ selectedReceiptOrder.createdAt | date:'medium' }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Customer & Shipping Info -->
+                        <div class="row g-3 mb-4 bg-light p-3 rounded-3 border">
+                            <div class="col-sm-6">
+                                <h6 class="fw-bold text-dark border-bottom pb-1 mb-2">Billed & Shipped To</h6>
+                                <p class="mb-1 fw-bold text-dark">{{ selectedReceiptOrder.shippingAddress?.name || 'Valued Customer' }}</p>
+                                <p class="mb-1 text-muted small">{{ selectedReceiptOrder.shippingAddress?.address }}</p>
+                                <p class="mb-1 text-muted small">{{ selectedReceiptOrder.shippingAddress?.city }}, {{ selectedReceiptOrder.shippingAddress?.state }} {{ selectedReceiptOrder.shippingAddress?.zipCode }}</p>
+                                <p class="mb-0 text-muted small"><i class="fas fa-phone me-1"></i> {{ selectedReceiptOrder.shippingAddress?.phone }}</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <h6 class="fw-bold text-dark border-bottom pb-1 mb-2">Payment Details</h6>
+                                <p class="mb-1 text-muted small"><span class="fw-semibold text-dark">Method:</span> {{ selectedReceiptOrder.paymentMethod }}</p>
+                                <p class="mb-1 text-muted small"><span class="fw-semibold text-dark">Status:</span> <span class="badge bg-success text-white">Paid / Approved</span></p>
+                                <p class="mb-0 text-muted small"><span class="fw-semibold text-dark">Fulfilled By:</span> Krebers Express Warehouse</p>
+                            </div>
+                        </div>
+
+                        <!-- Items Table -->
+                        <div class="table-responsive mb-4">
+                            <table class="table table-bordered align-middle">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Item Description</th>
+                                        <th class="text-center">Qty</th>
+                                        <th class="text-end">Unit Price</th>
+                                        <th class="text-end">Total Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of selectedReceiptOrder.items">
+                                        <td class="fw-bold text-dark">{{ item.name }}</td>
+                                        <td class="text-center">{{ item.qty || 1 }}</td>
+                                        <td class="text-end">{{ item.currentPrice | fxCurrency }}</td>
+                                        <td class="text-end fw-bold">{{ ((item.currentPrice) * (item.qty || 1)) | fxCurrency }}</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" class="text-end fw-bold text-dark">Subtotal:</td>
+                                        <td class="text-end fw-bold text-dark">{{ (selectedReceiptOrder.total - 5000) | fxCurrency }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="text-end fw-bold text-dark">Standard Shipping:</td>
+                                        <td class="text-end fw-bold text-dark">{{ 5000 | fxCurrency }}</td>
+                                    </tr>
+                                    <tr class="table-active">
+                                        <td colspan="3" class="text-end fw-bold fs-5 text-dark">Grand Total Paid:</td>
+                                        <td class="text-end fw-bold fs-5 text-primary">{{ selectedReceiptOrder.total | fxCurrency }}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <div class="text-center text-muted small border-top pt-3">
+                            <p class="mb-0"><i class="fas fa-heart text-danger me-1"></i> Thank you for shopping with Krebers Store! For returns or inquiries, contact info&#64;krebers.com</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light p-3">
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" (click)="closeReceiptModal()">Close</button>
+                        <button type="button" class="btn btn-primary rounded-pill px-4 fw-bold" (click)="printReceipt()">
+                            <i class="fas fa-print me-2"></i> Print / Save PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ng-template #loadingState>
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="text-muted mt-2">Authenticating profile...</p>
+            </div>
+        </ng-template>
+
+    </div>

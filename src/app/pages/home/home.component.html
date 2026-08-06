@@ -2,27 +2,27 @@
 <div class="container-fluid carousel bg-light px-0">
     <div class="row g-0 justify-content-end">
         <div class="col-12 col-lg-7 col-xl-9">
-            <div class="header-carousel owl-carousel bg-light py-5">
+            <app-native-carousel [items]="[1, 2]" [itemsPerPage]="1" [autoPlay]="true">
 
                 <!-- ITEM 1 -->
-                <div class="row g-0 header-carousel-item align-items-center">
-                    <div class="col-xl-6 carousel-img wow fadeInLeft" data-wow-delay="0.1s">
-                        <img src="../../../assets/img/krebers-1.png" class="img-fluid w-100" alt="Image">
+                <div class="row g-0 header-carousel-item align-items-center w-100 flex-shrink-0">
+                    <div class="col-xl-6 carousel-img">
+                        <img src="../../../assets/img/krebers-1.png" class="img-fluid w-100" alt="Image" style="max-height: 420px; object-fit: contain;">
                     </div>
 
                     <div class="col-xl-6 carousel-content p-4">
-                        <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s"
+                        <h4 class="text-uppercase fw-bold mb-4"
                             style="letter-spacing: 3px;">Up to 40% Off</h4>
 
-                        <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">
+                        <h1 class="display-3 text-capitalize mb-4">
                             Latest Fashion Jackets & Streetwear
                         </h1>
 
-                        <p class="text-dark wow fadeInRight" data-wow-delay="0.5s">
+                        <p class="text-dark">
                             Fresh styles available this season
                         </p>
 
-                        <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s"
+                        <a class="btn btn-primary rounded-pill py-3 px-5"
                             [routerLink]="['/shop']">
                             Shop Collection
                         </a>
@@ -30,31 +30,31 @@
                 </div>
 
                 <!-- ITEM 2 -->
-                <div class="row g-0 header-carousel-item align-items-center">
-                    <div class="col-xl-6 carousel-img wow fadeInLeft" data-wow-delay="0.1s">
-                        <img src="../../../assets/img/krebers-1.png" class="img-fluid w-100" alt="Image">
+                <div class="row g-0 header-carousel-item align-items-center w-100 flex-shrink-0">
+                    <div class="col-xl-6 carousel-img">
+                        <img src="../../../assets/img/krebers-1.png" class="img-fluid w-100" alt="Image" style="max-height: 420px; object-fit: contain;">
                     </div>
 
                     <div class="col-xl-6 carousel-content p-4">
-                        <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s"
+                        <h4 class="text-uppercase fw-bold mb-4"
                             style="letter-spacing: 3px;">New Arrivals</h4>
 
-                        <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">
+                        <h1 class="display-3 text-capitalize mb-4">
                             Exclusive Summer Outfits & Urban Wear
                         </h1>
 
-                        <p class="text-dark wow fadeInRight" data-wow-delay="0.5s">
+                        <p class="text-dark">
                             Discover premium materials & bold designs
                         </p>
 
-                        <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s"
+                        <a class="btn btn-primary rounded-pill py-3 px-5"
                             [routerLink]="['/shop']">
                             Explore Styles
                         </a>
                     </div>
                 </div>
 
-            </div>
+            </app-native-carousel>
         </div>
 
         <!-- SIDE BANNER -->
@@ -447,6 +447,16 @@
                             <div class="products-mini-content p-3">
                                 <a [routerLink]="['/shop']" [queryParams]="{ cat: product.category }" class="d-block mb-1 text-muted text-decoration-none small text-uppercase tracking-wider fw-semibold">{{ product.category }}</a>
                                 <a [routerLink]="['/product', product.id]" class="d-block h5 text-dark text-decoration-none fw-bold text-truncate-2 hover-text-primary">{{ product.name }}</a>
+                                <div class="d-flex align-items-center my-1">
+                                    <div class="me-1">
+                                        <i *ngFor="let star of [1,2,3,4,5]" class="fas fa-star" style="font-size: 0.75rem;" [ngClass]="{
+                                             'text-warning': star <= (product.rating || 4.5),
+                                             'text-secondary opacity-25': star > (product.rating || 4.5)
+                                           }">
+                                        </i>
+                                    </div>
+                                    <span class="small fw-bold text-muted ms-1" style="font-size: 0.75rem;">({{ product.rating || 4.5 }})</span>
+                                </div>
                                 <div class="mt-2">
                                     <del class="me-2 text-muted small" *ngIf="product.prevPrice > product.currentPrice">{{ product.prevPrice | fxCurrency }}</del>
                                     <span class="text-primary fw-bold fs-5">{{ product.currentPrice | fxCurrency }}</span>

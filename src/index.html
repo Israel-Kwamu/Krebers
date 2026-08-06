@@ -33,7 +33,27 @@
 </head>
 
 <body>
-  <app-root></app-root>
+  <app-root>
+    <!-- Initial Premium Preloader -->
+    <div id="initial-preloader" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 999999; font-family: 'Open Sans', 'Roboto', sans-serif;">
+      <div style="margin-bottom: 24px; text-align: center;">
+        <img src="./assets/img/krebers.jpg" alt="Krebers Logo" style="max-height: 75px; object-fit: contain; animation: pulse 2s infinite ease-in-out;">
+      </div>
+      <div style="width: 44px; height: 44px; border: 3px solid #e2e8f0; border-top: 3px solid #81c408; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px;"></div>
+      <h5 style="color: #1e293b; font-weight: 700; font-size: 16px; margin: 0; letter-spacing: 0.5px; text-transform: uppercase;">Krebers Store</h5>
+      <span style="color: #64748b; font-size: 12px; margin-top: 6px;">Loading Premium Native Apparel...</span>
+      <style>
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 0.6; transform: scale(0.97); }
+          50% { opacity: 1; transform: scale(1.03); }
+        }
+      </style>
+    </div>
+  </app-root>
 
 
 
@@ -58,28 +78,32 @@
   <script src="./assets/js/main.js"></script>
 
 <script>
-  $(document).ready(function(){
-    $(".productList-carousel").owlCarousel({
-        items: 1,               // 1 slide per view (you can adjust)
-        loop: true,
-        margin: 10,
-        nav: true,              // Show prev/next buttons
-        navText: [
-            '<i class="fas fa-chevron-left"></i>',
-            '<i class="fas fa-chevron-right"></i>'
-        ],
-        dots: false,
-        autoplay: false,
-        responsive: {
-            768: {
-                items: 2
-            },
-            992: {
-                items: 3
+  if (typeof jQuery !== 'undefined') {
+    jQuery(document).ready(function($){
+      if ($.fn && $.fn.owlCarousel && $(".productList-carousel").length) {
+        $(".productList-carousel").owlCarousel({
+            items: 1,               // 1 slide per view (you can adjust)
+            loop: true,
+            margin: 10,
+            nav: true,              // Show prev/next buttons
+            navText: [
+                '<i class="fas fa-chevron-left"></i>',
+                '<i class="fas fa-chevron-right"></i>'
+            ],
+            dots: false,
+            autoplay: false,
+            responsive: {
+                768: {
+                    items: 2
+                },
+                992: {
+                    items: 3
+                }
             }
-        }
+        });
+      }
     });
-});
+  }
 </script>
 
 </body>

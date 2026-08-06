@@ -40,6 +40,9 @@ import { KidsShortsComponent } from './pages/kids-section/kids-shorts/kids-short
 import { KidsHoodiesComponent } from './pages/kids-section/kids-hoodies/kids-hoodies.component';
 import { KidsDressesComponent } from './pages/kids-section/kids-dresses/kids-dresses.component';
 import { KidsNativeComponent } from './pages/kids-section/kids-native/kids-native.component';
+import { ProfileComponent } from './pages/profile/profile.component';
+import { AuthComponent } from './pages/auth/auth.component';
+import { NativeCarouselComponent } from './shared/native-carousel/native-carousel.component';
 import { FxCurrencyPipe } from './shared/pipes/fx-currency.pipe';
 
 @NgModule({
@@ -72,6 +75,9 @@ import { FxCurrencyPipe } from './shared/pipes/fx-currency.pipe';
     KidsHoodiesComponent,
     KidsDressesComponent,
     KidsNativeComponent,
+    ProfileComponent,
+    AuthComponent,
+    NativeCarouselComponent,
     FxCurrencyPipe,
   ],
   imports: [

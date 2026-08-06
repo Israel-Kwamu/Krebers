@@ -13,6 +13,9 @@ export interface Product {
   id: number;
   name: string;
   size: string;
+  sizes?: string[];
+  selectedSize?: string;
+  selectedColor?: string;
   currentPrice: number;
   prevPrice: number;
   images: string[];

@@ -181,6 +181,10 @@
                 In Stock Only
                 <span class="remove-btn" (click)="toggleInStock()">×</span>
               </span>
+              <span class="active-filter-badge" *ngIf="minRating > 0">
+                Rating: {{ minRating }}+ ★
+                <span class="remove-btn" (click)="setMinRating(0)">×</span>
+              </span>
             </div>
           </div>
 
@@ -289,7 +293,27 @@
             </div>
           </div>
 
-          <!-- 5. IN-STOCK TOGGLE -->
+          <!-- 5. RATING FILTER -->
+          <div class="filter-section">
+            <h5 class="filter-title">
+              <span>Customer Rating</span>
+            </h5>
+            <div class="d-flex flex-column gap-2">
+              <button *ngFor="let r of [5, 4, 3]"
+                      type="button"
+                      class="btn btn-sm text-start border rounded p-2 d-flex align-items-center justify-content-between"
+                      [class.btn-primary]="minRating === r"
+                      [class.btn-light]="minRating !== r"
+                      (click)="setMinRating(r)">
+                <span>
+                  <i class="fas fa-star text-warning me-1"></i> {{ r }} Stars & Above
+                </span>
+                <span class="badge rounded-pill bg-secondary" *ngIf="minRating === r">Active</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 6. IN-STOCK TOGGLE -->
           <div class="filter-section mb-0 border-0">
             <div class="form-check form-switch d-flex align-items-center justify-content-between p-0">
               <label class="form-check-label fw-bold small text-dark mb-0 cursor-pointer" for="inStockSwitch">

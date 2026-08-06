@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Product } from './product.model';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +12,13 @@ export class RecentlyViewedService {
   private recentlyViewedSubject = new BehaviorSubject<Product[]>([]);
   public recentlyViewed$: Observable<Product[]> = this.recentlyViewedSubject.asObservable();
 
-  constructor() {
+  constructor(private authService: AuthService) {
     this.loadRecentlyViewed();
+
+    // Reload or clear recently viewed when auth changes (e.g. on logout)
+    this.authService.currentUser$.subscribe(() => {
+      this.loadRecentlyViewed();
+    });
   }
 
   private loadRecentlyViewed(): void {
@@ -22,6 +28,8 @@ export class RecentlyViewedService {
         if (stored) {
           const items: Product[] = JSON.parse(stored);
           this.recentlyViewedSubject.next(items);
+        } else {
+          this.recentlyViewedSubject.next([]);
         }
       } catch (e) {
         console.error('Error loading recently viewed items', e);

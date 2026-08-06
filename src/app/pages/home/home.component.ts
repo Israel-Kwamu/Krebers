@@ -113,19 +113,25 @@ export class HomeComponent implements AfterViewInit {
 
 
   ngAfterViewInit(): void {
-    $('.header-carousel').owlCarousel({
-      loop: true,
-      margin: 0,
-      nav: true,
-      dots: false,
-      autoplay: true,
-      autoplayTimeout: 4000,
-      smartSpeed: 900,
-      items: 1,
-      navText: [
-        '<i class="bi bi-chevron-left"></i>',
-        '<i class="bi bi-chevron-right"></i>'
-      ]
-    });
+    if (typeof $ !== 'undefined' && $.fn && $.fn.owlCarousel && $('.header-carousel').length) {
+      try {
+        $('.header-carousel').owlCarousel({
+          loop: true,
+          margin: 0,
+          nav: true,
+          dots: false,
+          autoplay: true,
+          autoplayTimeout: 4000,
+          smartSpeed: 900,
+          items: 1,
+          navText: [
+            '<i class="bi bi-chevron-left"></i>',
+            '<i class="bi bi-chevron-right"></i>'
+          ]
+        });
+      } catch (e) {
+        console.warn('Owl Carousel error in HomeComponent:', e);
+      }
+    }
   }
 }

@@ -24,6 +24,7 @@ export class WishlistComponent implements OnInit {
 
   addToCart(product: Product): void {
     this.cartService.addToCart(product, 1);
+    this.wishlistService.removeFromWishlist(product.id);
   }
 
   removeFromWishlist(productId: number): void {

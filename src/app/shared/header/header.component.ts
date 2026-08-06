@@ -5,6 +5,7 @@ import { CartService } from '../../core/cart.service';
 import { WishlistService } from '../../core/wishlist.service';
 import { CurrencyService, Currency } from '../../core/currency.service';
 import { ThemeService } from '../../core/theme.service';
+import { AuthService } from '../../core/auth.service';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Product } from '../../core/product.model';
@@ -37,6 +38,7 @@ export class HeaderComponent implements OnInit {
     private wishlistService: WishlistService,
     public currencyService: CurrencyService,
     public themeService: ThemeService,
+    public authService: AuthService,
     private eRef: ElementRef
   ) { }
 
@@ -73,6 +75,11 @@ export class HeaderComponent implements OnInit {
     this.router.events.subscribe(() => {
       this.closeAllDropdowns();
     });
+  }
+
+  async logout(): Promise<void> {
+    await this.authService.logout();
+    this.router.navigate(['/']);
   }
 
   selectCurrency(code: string): void {
@@ -193,4 +200,5 @@ export class HeaderComponent implements OnInit {
     this.showSuggestions = false;
   }
 }
+
 

@@ -28,6 +28,7 @@ export class ShopComponent implements OnInit {
   selectedSizes: string[] = [];
   selectedColors: string[] = [];
   inStockOnly: boolean = false;
+  minRating: number = 0;
 
   // Sorting
   selectedSort: string = 'featured'; // 'featured', 'price-low', 'price-high', 'rating', 'newest'
@@ -124,7 +125,12 @@ export class ShopComponent implements OnInit {
       result = result.filter(p => p.qty > 0);
     }
 
-    // 8. Smart Sorting Logic
+    // 8. Minimum Rating Filter
+    if (this.minRating > 0) {
+      result = result.filter(p => (p.rating || 5) >= this.minRating);
+    }
+
+    // 9. Smart Sorting Logic
     switch (this.selectedSort) {
       case 'price-low':
         result.sort((a, b) => a.currentPrice - b.currentPrice);
@@ -255,10 +261,20 @@ export class ShopComponent implements OnInit {
     this.selectedSizes = [];
     this.selectedColors = [];
     this.inStockOnly = false;
+    this.minRating = 0;
     this.selectedSort = 'featured';
 
     this.updateAvailableSubCategories();
     this.router.navigate(['/shop']);
+    this.applyFilters();
+  }
+
+  setMinRating(rating: number): void {
+    if (this.minRating === rating) {
+      this.minRating = 0;
+    } else {
+      this.minRating = rating;
+    }
     this.applyFilters();
   }
 
@@ -308,7 +324,8 @@ export class ShopComponent implements OnInit {
       this.selectedMaxPrice < this.ABSOLUTE_MAX_PRICE ||
       this.selectedSizes.length > 0 ||
       this.selectedColors.length > 0 ||
-      this.inStockOnly
+      this.inStockOnly ||
+      this.minRating > 0
     );
   }
 

@@ -12,6 +12,7 @@ export class ProductService {
       id: 177,
       name: 'Premium Genuine Leather Jacket',
       size: 'L',
+      sizes: ['S', 'M', 'L', 'XL'],
       currentPrice: 45000,
       prevPrice: 55000,
       images: [
@@ -37,6 +38,7 @@ export class ProductService {
       id: 101,
       name: 'Classic White Oxford Shirt',
       size: 'M',
+      sizes: ['S', 'M', 'L', 'XL'],
       currentPrice: 18000,
       prevPrice: 22000,
       images: [
@@ -45,7 +47,7 @@ export class ProductService {
       ],
       category: 'Men',
       subCategory: 'Shirts',
-      color: ['White'],
+      color: ['White', 'Light Blue'],
       location: 'Lagos, Nigeria',
       qty: 15,
       description: 'Crisp cotton Oxford shirt tailored for everyday elegance.',
@@ -60,6 +62,7 @@ export class ProductService {
       id: 102,
       name: 'Slim Fit Chino Pants',
       size: '32',
+      sizes: ['30', '32', '34', '36'],
       currentPrice: 21000,
       prevPrice: 25000,
       images: [
@@ -81,6 +84,7 @@ export class ProductService {
       id: 103,
       name: 'Traditional Agbada Embroidery Set',
       size: 'XL',
+      sizes: ['M', 'L', 'XL', 'XXL'],
       currentPrice: 65000,
       prevPrice: 75000,
       images: [
@@ -104,6 +108,7 @@ export class ProductService {
       id: 104,
       name: 'Urban Graphic Cotton T-Shirt',
       size: 'L',
+      sizes: ['S', 'M', 'L', 'XL'],
       currentPrice: 12500,
       prevPrice: 15000,
       images: [
@@ -112,7 +117,7 @@ export class ProductService {
       ],
       category: 'Men',
       subCategory: 'T-Shirts',
-      color: ['Black', 'Red'],
+      color: ['Black', 'Red', 'White'],
       location: 'Lagos, Nigeria',
       qty: 20,
       description: 'Soft heavyweight cotton tee featuring minimal urban chest graphic.',
@@ -125,6 +130,7 @@ export class ProductService {
       id: 105,
       name: 'Fleece Heavyweight Pullover Hoodie',
       size: 'XXL',
+      sizes: ['M', 'L', 'XL', 'XXL'],
       currentPrice: 28000,
       prevPrice: 34000,
       images: [
@@ -148,6 +154,7 @@ export class ProductService {
       id: 201,
       name: 'Floral Print Silk Evening Gown',
       size: 'S',
+      sizes: ['XS', 'S', 'M', 'L'],
       currentPrice: 38000,
       prevPrice: 45000,
       images: [
@@ -171,6 +178,7 @@ export class ProductService {
       id: 202,
       name: 'Cozy Fleece Cropped Hoodie',
       size: 'M',
+      sizes: ['S', 'M', 'L'],
       currentPrice: 16500,
       prevPrice: 20000,
       images: [
@@ -192,6 +200,7 @@ export class ProductService {
       id: 203,
       name: 'High-Waist Pleated Midi Skirt',
       size: 'M',
+      sizes: ['S', 'M', 'L'],
       currentPrice: 19500,
       prevPrice: 24000,
       images: [
@@ -213,6 +222,7 @@ export class ProductService {
       id: 204,
       name: 'Athletic Slim Fit Women Joggers',
       size: 'S',
+      sizes: ['XS', 'S', 'M', 'L'],
       currentPrice: 15000,
       prevPrice: 18500,
       images: [
@@ -236,6 +246,7 @@ export class ProductService {
       id: 205,
       name: 'Elegant Satin Blouse Top',
       size: 'L',
+      sizes: ['S', 'M', 'L', 'XL'],
       currentPrice: 14000,
       prevPrice: 17000,
       images: [
@@ -257,6 +268,7 @@ export class ProductService {
       id: 301,
       name: 'Kids Graphic Organic Cotton Tee',
       size: 'S',
+      sizes: ['S', 'M', 'L'],
       currentPrice: 7500,
       prevPrice: 9500,
       images: [
@@ -280,6 +292,7 @@ export class ProductService {
       id: 302,
       name: 'Kids Stretch Denim Shorts',
       size: 'M',
+      sizes: ['S', 'M', 'L'],
       currentPrice: 9000,
       prevPrice: 11500,
       images: [
@@ -301,6 +314,7 @@ export class ProductService {
       id: 303,
       name: 'Kids Zip-Up Fleece Hoodie',
       size: 'L',
+      sizes: ['S', 'M', 'L'],
       currentPrice: 13500,
       prevPrice: 16000,
       images: [
@@ -322,6 +336,7 @@ export class ProductService {
       id: 304,
       name: 'Kids Party Tulle Princess Dress',
       size: 'S',
+      sizes: ['S', 'M', 'L'],
       currentPrice: 18500,
       prevPrice: 22000,
       images: [
