@@ -42,6 +42,7 @@ import { KidsDressesComponent } from './pages/kids-section/kids-dresses/kids-dre
 import { KidsNativeComponent } from './pages/kids-section/kids-native/kids-native.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { AuthComponent } from './pages/auth/auth.component';
+import { AdminComponent } from './pages/admin/admin.component';
 import { NativeCarouselComponent } from './shared/native-carousel/native-carousel.component';
 import { FxCurrencyPipe } from './shared/pipes/fx-currency.pipe';
 
@@ -77,6 +78,7 @@ import { FxCurrencyPipe } from './shared/pipes/fx-currency.pipe';
     KidsNativeComponent,
     ProfileComponent,
     AuthComponent,
+    AdminComponent,
     NativeCarouselComponent,
     FxCurrencyPipe,
   ],

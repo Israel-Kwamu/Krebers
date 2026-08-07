@@ -312,7 +312,17 @@
                             <div class="col-sm-6">
                                 <h6 class="fw-bold text-dark border-bottom pb-1 mb-2">Payment Details</h6>
                                 <p class="mb-1 text-muted small"><span class="fw-semibold text-dark">Method:</span> {{ selectedReceiptOrder.paymentMethod }}</p>
-                                <p class="mb-1 text-muted small"><span class="fw-semibold text-dark">Status:</span> <span class="badge bg-success text-white">Paid / Approved</span></p>
+                                <p class="mb-1 text-muted small"><span class="fw-semibold text-dark">Status:</span> 
+                                  <span class="badge" [class.bg-success]="selectedReceiptOrder.paymentStatus === 'Paid' || !selectedReceiptOrder.paymentStatus" [class.bg-warning]="selectedReceiptOrder.paymentStatus === 'Pending Verification'" [class.text-dark]="selectedReceiptOrder.paymentStatus === 'Pending Verification'">
+                                    {{ selectedReceiptOrder.paymentStatus || 'Paid' }}
+                                  </span>
+                                </p>
+                                <p *ngIf="selectedReceiptOrder.transferSenderName || selectedReceiptOrder.transferReference || selectedReceiptOrder.transferSenderBank" class="mb-1 text-muted extra-small">
+                                  <span class="fw-bold text-primary">Transfer Info:</span> 
+                                  <span *ngIf="selectedReceiptOrder.transferSenderBank">Bank: {{ selectedReceiptOrder.transferSenderBank }} | </span>
+                                  <span *ngIf="selectedReceiptOrder.transferSenderName">Sender: {{ selectedReceiptOrder.transferSenderName }} | </span>
+                                  <span *ngIf="selectedReceiptOrder.transferReference">Ref: {{ selectedReceiptOrder.transferReference }}</span>
+                                </p>
                                 <p class="mb-0 text-muted small"><span class="fw-semibold text-dark">Fulfilled By:</span> Krebers Express Warehouse</p>
                             </div>
                         </div>

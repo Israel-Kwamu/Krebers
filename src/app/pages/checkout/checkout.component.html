@@ -215,6 +215,87 @@
                   <i class="fas fa-credit-card text-primary fs-5"></i>
                 </label>
 
+                <!-- PAYSTACK ONLINE CARD EXPANDABLE PANEL -->
+                <div *ngIf="paymentMethod === 'Card / Paystack Online'" class="card paystack-card border rounded-4 shadow-sm mt-2 mb-2 animate-fade-in position-relative">
+                  <div class="p-3 p-md-4">
+                    <!-- Paystack Digital Card Banner -->
+                    <div class="card paystack-banner-box border-0 text-white rounded-3 p-3 p-md-4 mb-3 position-relative overflow-hidden">
+                      <i class="fas fa-credit-card position-absolute text-white" style="right: -10px; bottom: -15px; font-size: 7rem; opacity: 0.12; pointer-events: none;"></i>
+
+                      <div class="d-flex justify-content-between align-items-center mb-3 position-relative z-1 flex-wrap gap-2">
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                          <span class="badge bg-primary text-white fw-bold uppercase extra-small px-2.5 py-1 rounded">Paystack Gateway</span>
+                          <span class="text-white-50 extra-small fw-semibold">Instant Order Dispatch</span>
+                        </div>
+                        <span class="text-warning extra-small font-monospace fw-bold"><i class="fas fa-bolt me-1"></i>Zero Manual Waiting</span>
+                      </div>
+
+                      <!-- Accepted Card Brands Badges -->
+                      <div class="mb-3 position-relative z-1">
+                        <label class="text-white-50 extra-small d-block mb-2 text-uppercase tracking-wider fw-bold">Accepted Cards & Channels</label>
+                        <div class="d-flex align-items-center flex-wrap gap-2">
+                          <span class="card-brand-pill"><i class="fab fa-cc-mastercard text-warning me-1 fs-6"></i> Mastercard</span>
+                          <span class="card-brand-pill"><i class="fab fa-cc-visa text-info me-1 fs-6"></i> Visa</span>
+                          <span class="card-brand-pill"><i class="fas fa-credit-card text-success me-1"></i> Verve</span>
+                          <span class="card-brand-pill"><i class="fas fa-mobile-alt text-white me-1"></i> USSD / Bank App</span>
+                        </div>
+                      </div>
+
+                      <!-- Payable Amount -->
+                      <div class="d-flex justify-content-between align-items-center pt-2 border-top border-white border-opacity-10 position-relative z-1 flex-wrap gap-2">
+                        <div>
+                          <span class="text-white-50 extra-small d-block text-uppercase fw-bold">Total Amount to Charge</span>
+                          <strong class="text-warning fs-5 fw-bold">{{ getTotal() | fxCurrency }}</strong>
+                        </div>
+                        <span class="badge bg-success bg-opacity-20 text-white border border-success border-opacity-20 px-3 py-1.5 extra-small fw-bold">
+                          <i class="fas fa-check-circle me-1"></i> Instant Approval
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Payment Steps / Benefits -->
+                    <div class="bank-steps-box rounded-3 p-3 p-md-4 mb-4 border">
+                      <h6 class="fw-bold small text-uppercase tracking-wider mb-3 d-flex align-items-center gap-2">
+                        <i class="fas fa-info-circle text-primary fs-6"></i>
+                        <span>How Online Paystack Payment Works:</span>
+                      </h6>
+                      
+                      <div class="d-flex flex-column gap-3">
+                        <div class="d-flex align-items-center gap-3 p-3 rounded-3 bg-white border shadow-sm">
+                          <span class="badge bg-primary text-white rounded-circle flex-shrink-0 d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px; font-size: 0.85rem; font-weight: 700;">1</span>
+                          <div class="small lh-base text-dark">
+                            Click <strong>"Confirm Order & Pay Now"</strong> below to open the official Paystack gateway modal.
+                          </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3 p-3 rounded-3 bg-white border shadow-sm">
+                          <span class="badge bg-primary text-white rounded-circle flex-shrink-0 d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px; font-size: 0.85rem; font-weight: 700;">2</span>
+                          <div class="small lh-base text-dark">
+                            Enter your Mastercard, Visa, or Verve card details with Bank 3D-Secure OTP verification.
+                          </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3 p-3 rounded-3 bg-white border shadow-sm">
+                          <span class="badge bg-primary text-white rounded-circle flex-shrink-0 d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px; font-size: 0.85rem; font-weight: 700;">3</span>
+                          <div class="small lh-base text-dark">
+                            Once payment is approved, your order status is instantly marked as <strong>Paid</strong>.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Security Guarantee Notice -->
+                    <div class="p-3 paystack-header rounded-3 border border-primary-subtle extra-small d-flex align-items-center gap-3">
+                      <i class="fas fa-user-shield text-primary fs-3 flex-shrink-0"></i>
+                      <div>
+                        <span class="fw-bold d-block text-dark mb-1">Buyer Protection & Security:</span>
+                        <span class="text-muted">Krebers never stores your full credit card credentials. All transactions are processed via Paystack's Central Bank compliant payment gateway.</span>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
                 <label class="border rounded-3 p-3 cursor-pointer d-flex align-items-center justify-content-between transition-all"
                        [class.border-primary]="paymentMethod === 'Direct Bank Transfer'"
                        [class.bg-primary-subtle]="paymentMethod === 'Direct Bank Transfer'">
@@ -222,31 +303,191 @@
                     <input type="radio" name="payment" value="Direct Bank Transfer" [(ngModel)]="paymentMethod" class="form-check-input">
                     <div>
                       <span class="fw-bold text-dark d-block small">Direct Bank Transfer</span>
-                      <span class="extra-small text-muted">Instant bank transfer details shown upon confirmation</span>
+                      <span class="extra-small text-muted">Make direct bank payment to our store account</span>
                     </div>
                   </div>
                   <i class="fas fa-university text-primary fs-5"></i>
                 </label>
 
-                <label class="border rounded-3 p-3 cursor-pointer d-flex align-items-center justify-content-between transition-all"
-                       [class.border-primary]="paymentMethod === 'Cash On Delivery'"
-                       [class.bg-primary-subtle]="paymentMethod === 'Cash On Delivery'">
-                  <div class="d-flex align-items-center gap-3">
-                    <input type="radio" name="payment" value="Cash On Delivery" [(ngModel)]="paymentMethod" class="form-check-input">
-                    <div>
-                      <span class="fw-bold text-dark d-block small">Pay on Delivery</span>
-                      <span class="extra-small text-muted">Pay cash or POS upon item arrival</span>
+                <!-- DIRECT BANK TRANSFER ENHANCED EXPANDABLE PANEL -->
+                <div *ngIf="paymentMethod === 'Direct Bank Transfer'" class="card bank-transfer-card border border-primary-subtle rounded-4 shadow-sm mt-3 animate-fade-in position-relative">
+                  
+                  <!-- Header Bar -->
+                  <div class="bank-transfer-header px-3 py-2 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2 rounded-top-4">
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                      <span class="badge bg-primary text-white rounded-pill px-2.5 py-1"><i class="fas fa-university me-1"></i> Store Account</span>
+                      <span class="extra-small fw-bold text-primary">Instant Manual Bank Transfer</span>
                     </div>
+                    <span class="extra-small text-muted fw-semibold"><i class="fas fa-shield-alt text-success me-1"></i> Verified Merchant</span>
                   </div>
-                  <i class="fas fa-money-bill-wave text-success fs-5"></i>
-                </label>
+
+                  <div class="p-3 p-md-4">
+                    <!-- Digital Store Account Card -->
+                    <div class="card bank-account-box border-0 text-white rounded-3 p-3 p-md-4 mb-3 position-relative overflow-hidden">
+                      <!-- Decorative background watermark icon -->
+                      <i class="fas fa-university position-absolute text-white" style="right: -10px; bottom: -15px; font-size: 7rem; opacity: 0.08; pointer-events: none;"></i>
+
+                      <div class="d-flex justify-content-between align-items-center mb-3 position-relative z-1 flex-wrap gap-2">
+                        <div class="d-flex align-items-center flex-wrap gap-2">
+                          <span class="badge bg-warning text-dark fw-bold uppercase extra-small px-2 py-1 rounded">Official Account</span>
+                          <span class="text-white-50 extra-small fw-semibold">Providus Bank PLC</span>
+                        </div>
+                        <span class="text-warning extra-small font-monospace fw-bold"><i class="fas fa-check-circle me-1"></i>Zero Transfer Fee</span>
+                      </div>
+
+                      <!-- Account Number Display Box -->
+                      <div class="mb-3 position-relative z-1">
+                        <label class="text-white-50 extra-small d-block mb-1 text-uppercase tracking-wider fw-bold">Account Number</label>
+                        <div class="d-flex align-items-center justify-content-between bg-white bg-opacity-10 rounded-3 p-2 px-3 border border-white border-opacity-10 flex-wrap gap-2">
+                          <span class="font-monospace fs-4 fw-bold text-warning letter-spacing-2">5401920391</span>
+                          <button type="button" class="btn btn-sm rounded-pill font-semibold px-3 transition-all flex-shrink-0" 
+                                  [class.btn-warning]="!copiedAccountState" 
+                                  [class.btn-success]="copiedAccountState"
+                                  (click)="copyAccountNumber()">
+                            <i class="fas" [class.fa-copy]="!copiedAccountState" [class.fa-check]="copiedAccountState"></i>
+                            <span class="ms-1 extra-small fw-bold">{{ copiedAccountState ? 'Copied!' : 'Copy Account' }}</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- Account Name & Payable Amount -->
+                      <div class="row g-2 pt-2 border-top border-white border-opacity-10 position-relative z-1 align-items-center">
+                        <div class="col-12 col-sm-6">
+                          <span class="text-white-50 extra-small d-block text-uppercase fw-bold">Account Name</span>
+                          <strong class="text-white small fw-bold d-block text-truncate">Krebers Limited</strong>
+                        </div>
+                        <div class="col-12 col-sm-6 text-sm-end mt-2 mt-sm-0">
+                          <span class="text-white-50 extra-small d-block text-uppercase fw-bold">Amount To Transfer</span>
+                          <div class="d-flex align-items-center justify-content-start justify-content-sm-end gap-1">
+                            <strong class="text-warning small fw-bold">{{ getTotal() | fxCurrency }}</strong>
+                            <button type="button" class="btn btn-link text-warning p-0 extra-small text-decoration-none ms-1 flex-shrink-0" (click)="copyTransferAmount()" title="Copy exact amount">
+                              <i class="fas" [class.fa-copy]="!copiedAmountState" [class.fa-check]="copiedAmountState"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- How to Complete a Transfer Steps -->
+                    <div class="bank-steps-box rounded-3 p-3 p-md-4 mb-4 border">
+                      <h6 class="fw-bold small text-uppercase tracking-wider mb-3 d-flex align-items-center gap-2">
+                        <i class="fas fa-list-ol text-primary fs-6"></i>
+                        <span>How to Complete a Transfer:</span>
+                      </h6>
+                      
+                      <div class="d-flex flex-column gap-3">
+                        <!-- Step 1 -->
+                        <div class="d-flex align-items-center gap-3 p-3 rounded-3 bg-white border shadow-sm">
+                          <span class="badge bg-primary text-white rounded-circle flex-shrink-0 d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px; font-size: 0.85rem; font-weight: 700;">1</span>
+                          <div class="small lh-base text-dark">
+                            Open your banking app and select <strong>Providus Bank</strong>.
+                          </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="d-flex align-items-center gap-3 p-3 rounded-3 bg-white border shadow-sm">
+                          <span class="badge bg-primary text-white rounded-circle flex-shrink-0 d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px; font-size: 0.85rem; font-weight: 700;">2</span>
+                          <div class="small lh-base text-dark">
+                            Send the exact amount of <strong class="text-primary">{{ getTotal() | fxCurrency }}</strong> to account number <strong class="font-monospace text-dark">5401920391</strong>.
+                          </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="d-flex align-items-center gap-3 p-3 rounded-3 bg-white border shadow-sm">
+                          <span class="badge bg-primary text-white rounded-circle flex-shrink-0 d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px; font-size: 0.85rem; font-weight: 700;">3</span>
+                          <div class="small lh-base text-dark">
+                            Enter the sender's name in the provided field and click <strong>"Confirm Order."</strong>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Transfer Details Form Section -->
+                    <div class="border-top pt-4 mt-2">
+                      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                        <h6 class="fw-bold small mb-0 text-dark">
+                          <i class="fas fa-user-check text-primary me-2"></i>Sender Payment Verification Form
+                        </h6>
+                        <span class="badge bg-success text-white rounded-pill px-3 py-1.5 extra-small fw-bold shadow-sm">
+                          <i class="fas fa-bolt me-1"></i> Fast Verification
+                        </span>
+                      </div>
+                      <p class="text-muted extra-small mb-4">Provide your transfer details below so our finance team can quickly verify your payment.</p>
+
+                      <div class="row g-4">
+                        <!-- Field 1: Sender Name -->
+                        <div class="col-12 col-md-6">
+                          <label class="form-label extra-small fw-bold mb-2 d-flex flex-wrap justify-content-between align-items-center gap-1">
+                            <span class="text-dark">Sender Account Name</span>
+                            <span class="text-muted fw-normal extra-small">(Name on transfer app)</span>
+                          </label>
+                          <div class="input-group">
+                            <span class="input-group-text px-3"><i class="fas fa-user text-primary"></i></span>
+                            <input type="text" class="form-control py-2" 
+                                   placeholder="e.g. Adebayo Ogunlesi" 
+                                   [(ngModel)]="transferSenderName" 
+                                   name="transferSenderName">
+                          </div>
+                        </div>
+
+                        <!-- Field 2: Bank Transferred From -->
+                        <div class="col-12 col-md-6">
+                          <label class="form-label extra-small fw-bold mb-2 d-flex flex-wrap justify-content-between align-items-center gap-1">
+                            <span class="text-dark">Bank Transferred From</span>
+                            <span class="text-muted fw-normal extra-small">(Paying bank)</span>
+                          </label>
+                          <div class="input-group">
+                            <span class="input-group-text px-3"><i class="fas fa-university text-primary"></i></span>
+                            <select class="form-select py-2 cursor-pointer" [(ngModel)]="transferSenderBank" name="transferSenderBank">
+                              <option value="">-- Select Your Bank --</option>
+                              <option *ngFor="let b of popularBanks" [value]="b">{{ b }}</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <!-- Field 3: Session ID / Reference -->
+                        <div class="col-12">
+                          <label class="form-label extra-small fw-bold mb-2 d-flex flex-wrap justify-content-between align-items-center gap-1">
+                            <span class="text-dark">Session ID / Transaction Reference</span>
+                            <span class="text-muted fw-normal extra-small">(Optional)</span>
+                          </label>
+                          <div class="input-group">
+                            <span class="input-group-text px-3"><i class="fas fa-receipt text-primary"></i></span>
+                            <input type="text" class="form-control py-2 font-monospace" 
+                                   placeholder="e.g. 1000049281920391" 
+                                   [(ngModel)]="transferReference" 
+                                   name="transferReference">
+                          </div>
+                          <div class="form-text extra-small text-muted mt-2 d-flex align-items-center gap-1">
+                            <i class="fas fa-info-circle text-primary me-1"></i> You can find the Session ID on your bank's transfer receipt
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Verification Notice -->
+                      <div class="p-3 bank-transfer-header rounded-3 border border-primary-subtle extra-small mt-4 d-flex align-items-center gap-3">
+                        <i class="fas fa-clock text-primary fs-4 flex-shrink-0"></i>
+                        <div>
+                          <span class="fw-bold d-block text-primary mb-1">Automatic Order Reservation:</span>
+                          <span class="text-muted">Your items will be reserved immediately once submitted. Orders with bank transfers are verified within 5–15 minutes.</span>
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+                </div>
               </div>
             </div>
 
             <!-- Submit Order Button -->
             <button type="submit" class="btn btn-primary w-100 text-uppercase py-3 fs-6 fw-bold rounded-pill shadow" [disabled]="isPlacingOrder || cartItems.length === 0">
               <span class="spinner-border spinner-border-sm me-2" *ngIf="isPlacingOrder"></span>
-              <span>{{ isPlacingOrder ? 'Processing Order...' : 'Confirm & Place Order' }}</span>
+              <span *ngIf="!isPlacingOrder">
+                <i class="fas fa-lock me-2" *ngIf="paymentMethod === 'Card / Paystack Online'"></i>
+                {{ paymentMethod === 'Card / Paystack Online' ? 'Confirm Order & Pay Now' : 'Confirm & Place Order' }}
+              </span>
+              <span *ngIf="isPlacingOrder">Processing Order...</span>
             </button>
 
             <!-- Guarantee Badges -->

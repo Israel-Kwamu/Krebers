@@ -20,12 +20,23 @@ export interface UserProfile {
 export interface UserOrder {
   id?: string;
   userId: string;
+  userName?: string;
+  userEmail?: string;
   items: any[];
   total: number;
-  status: string;
+  status: string; // 'Pending' | 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled'
+  paymentStatus?: string; // 'Paid' | 'Pending Verification' | 'Refunded' | 'Failed'
+  trackingNumber?: string;
+  carrier?: string;
   shippingAddress: any;
   paymentMethod: string;
+  transferReference?: string;
+  transferSenderName?: string;
+  transferSenderBank?: string;
+  bankName?: string;
   createdAt: string;
+  updatedAt?: string;
+  notes?: string;
 }
 
 export interface LocalUser {
@@ -222,17 +233,22 @@ export class AuthService {
     if (!user) throw new Error('User must be logged in to save orders');
 
     const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
+    const profile = this.userProfile;
+    const isOnlinePayment = ['paystack', 'flutterwave', 'card'].includes(orderData.paymentMethod.toLowerCase());
+
     const newOrder: UserOrder = {
       ...orderData,
       id: orderId,
+      userName: profile?.displayName || user.displayName || 'Customer',
+      userEmail: profile?.email || user.email,
+      paymentStatus: orderData.paymentStatus || (isOnlinePayment ? 'Paid' : 'Pending Verification'),
+      status: orderData.status || 'Pending',
       createdAt: new Date().toISOString()
     };
 
     const orders = this.getStoredOrders();
     orders.unshift(newOrder);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders));
-    }
+    this.saveOrdersToStorage(orders);
 
     return orderId;
   }
@@ -244,6 +260,54 @@ export class AuthService {
 
     const orders = this.getStoredOrders();
     return orders.filter(o => o.userId === user.uid);
+  }
+
+  // Admin: Get All Orders
+  getAllOrders(): UserOrder[] {
+    return this.getStoredOrders();
+  }
+
+  // Admin: Get All Registered Users
+  getAllRegisteredUsers(): LocalUser[] {
+    return this.getStoredUsers();
+  }
+
+  // Admin: Update Order Status & Tracking
+  updateOrderStatus(orderId: string, status: string, trackingNumber?: string, carrier?: string, notes?: string): void {
+    const orders = this.getStoredOrders();
+    const idx = orders.findIndex(o => o.id === orderId);
+    if (idx !== -1) {
+      orders[idx].status = status;
+      if (trackingNumber !== undefined) orders[idx].trackingNumber = trackingNumber;
+      if (carrier !== undefined) orders[idx].carrier = carrier;
+      if (notes !== undefined) orders[idx].notes = notes;
+      orders[idx].updatedAt = new Date().toISOString();
+      this.saveOrdersToStorage(orders);
+      this.toastService.showCustomToast(`Order ${orderId} updated to ${status}! 📦`);
+    }
+  }
+
+  // Admin: Update Payment Status
+  updatePaymentStatus(orderId: string, paymentStatus: string, notes?: string): void {
+    const orders = this.getStoredOrders();
+    const idx = orders.findIndex(o => o.id === orderId);
+    if (idx !== -1) {
+      orders[idx].paymentStatus = paymentStatus;
+      if (notes) orders[idx].notes = notes;
+      orders[idx].updatedAt = new Date().toISOString();
+      this.saveOrdersToStorage(orders);
+      this.toastService.showCustomToast(`Payment for ${orderId} updated to ${paymentStatus}! 💳`);
+    }
+  }
+
+  private saveOrdersToStorage(orders: UserOrder[]): void {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders));
+      } catch (e) {
+        console.error('Error saving orders to localStorage:', e);
+      }
+    }
   }
 
   // Helper Methods for LocalStorage
@@ -315,13 +379,144 @@ export class AuthService {
     }
   }
 
+  clearAllUserData(): void {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify([]));
+      localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify([]));
+      localStorage.removeItem(SESSION_STORAGE_KEY);
+      this.currentUserSubject.next(null);
+      this.userProfileSubject.next(null);
+
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (key.startsWith('krebers_profile_') || key.startsWith('krebers_cart_') || key.startsWith('krebers_wishlist_') || key === 'cart' || key === 'krebers_wishlist' || key === 'krebers_recently_viewed')) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(k => localStorage.removeItem(k));
+    } catch (e) {
+      console.error('Error clearing all user data:', e);
+    }
+  }
+
   private getStoredOrders(): UserOrder[] {
     if (typeof window === 'undefined') return [];
     try {
       const data = localStorage.getItem(ORDERS_STORAGE_KEY);
-      return data ? JSON.parse(data) : [];
-    } catch {
-      return [];
+      if (data) {
+        return JSON.parse(data);
+      }
+    } catch (e) {
+      console.error('Error loading orders:', e);
     }
+
+    // Default Seed Orders for Admin Demonstration
+    const sampleOrders: UserOrder[] = [
+      {
+        id: 'ORD-892301',
+        userId: 'usr_sample_1',
+        userName: 'Adesuwa Olowe',
+        userEmail: 'adesuwa@example.com',
+        items: [
+          { name: 'Traditional Agbada Embroidery Set', qty: 1, currentPrice: 65000, image: 'assets/img/krebers.jpg' },
+          { name: 'Classic White Oxford Shirt', qty: 2, currentPrice: 18000, image: 'assets/img/header-img.png' }
+        ],
+        total: 101000,
+        status: 'Processing',
+        paymentStatus: 'Paid',
+        paymentMethod: 'Paystack (Card)',
+        trackingNumber: 'GIG-99812-LA',
+        carrier: 'GIG Logistics',
+        shippingAddress: {
+          firstName: 'Adesuwa',
+          lastName: 'Olowe',
+          street: '14 Admiralty Way, Lekki Phase 1',
+          city: 'Lagos',
+          state: 'Lagos State',
+          country: 'Nigeria',
+          phone: '+234 803 123 4567'
+        },
+        createdAt: new Date(Date.now() - 86400000 * 2).toISOString()
+      },
+      {
+        id: 'ORD-771209',
+        userId: 'usr_sample_2',
+        userName: 'Babatunde Raji',
+        userEmail: 'b.raji@example.com',
+        items: [
+          { name: 'Premium Genuine Leather Jacket', qty: 1, currentPrice: 45000, image: 'assets/img/krebers.jpg' }
+        ],
+        total: 45000,
+        status: 'Shipped',
+        paymentStatus: 'Paid',
+        paymentMethod: 'Bank Transfer',
+        trackingNumber: 'DHL-48192039',
+        carrier: 'DHL Express',
+        shippingAddress: {
+          firstName: 'Babatunde',
+          lastName: 'Raji',
+          street: '8 Maitama Avenue',
+          city: 'Abuja',
+          state: 'FCT',
+          country: 'Nigeria',
+          phone: '+234 802 987 6543'
+        },
+        createdAt: new Date(Date.now() - 86400000 * 4).toISOString()
+      },
+      {
+        id: 'ORD-654102',
+        userId: 'usr_sample_3',
+        userName: 'Chioma Nwosu',
+        userEmail: 'chioma.nwosu@example.com',
+        items: [
+          { name: 'Floral Print Silk Evening Gown', qty: 1, currentPrice: 38000, image: 'assets/img/header-img.png' },
+          { name: 'Cozy Fleece Cropped Hoodie', qty: 1, currentPrice: 16500, image: 'assets/img/krebers-1.png' }
+        ],
+        total: 54500,
+        status: 'Pending',
+        paymentStatus: 'Paid',
+        paymentMethod: 'Direct Bank Transfer',
+        shippingAddress: {
+          firstName: 'Chioma',
+          lastName: 'Nwosu',
+          street: '22 Trans-Amadi Road',
+          city: 'Port Harcourt',
+          state: 'Rivers State',
+          country: 'Nigeria',
+          phone: '+234 814 555 1212'
+        },
+        createdAt: new Date(Date.now() - 86400000 * 0.5).toISOString()
+      },
+      {
+        id: 'ORD-510042',
+        userId: 'usr_sample_4',
+        userName: 'Emeka Okafor',
+        userEmail: 'emeka.o@example.com',
+        items: [
+          { name: 'Slim Fit Chino Pants', qty: 2, currentPrice: 21000, image: 'assets/img/krebers-1.png' }
+        ],
+        total: 42000,
+        status: 'Delivered',
+        paymentStatus: 'Paid',
+        paymentMethod: 'Flutterwave',
+        trackingNumber: 'RED-882190',
+        carrier: 'Red Star Express',
+        shippingAddress: {
+          firstName: 'Emeka',
+          lastName: 'Okafor',
+          street: '5 Bodija Estate',
+          city: 'Ibadan',
+          state: 'Oyo State',
+          country: 'Nigeria',
+          phone: '+234 701 444 3322'
+        },
+        createdAt: new Date(Date.now() - 86400000 * 8).toISOString()
+      }
+    ];
+
+    this.saveOrdersToStorage(sampleOrders);
+    return sampleOrders;
   }
 }

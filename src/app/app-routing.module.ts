@@ -9,6 +9,7 @@ import { WishlistComponent } from './pages/wishlist/wishlist.component';
 import { ProductViewComponent } from './pages/product-view/product-view.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { AuthComponent } from './pages/auth/auth.component';
+import { AdminComponent } from './pages/admin/admin.component';
 import { KidsNativeComponent } from './pages/kids-section/kids-native/kids-native.component';
 import { KidsHoodiesComponent } from './pages/kids-section/kids-hoodies/kids-hoodies.component';
 import { KidsDressesComponent } from './pages/kids-section/kids-dresses/kids-dresses.component';
@@ -39,6 +40,7 @@ const routes: Routes = [
   { path: 'wishlist', component: WishlistComponent },
   { path: 'profile', component: ProfileComponent },
   { path: 'auth', component: AuthComponent },
+  { path: 'admin', component: AdminComponent },
   { path: 'product/:id', component: ProductViewComponent },
   { path: 'kidsNative', component: KidsNativeComponent },
   { path: 'kidsHoodies', component: KidsHoodiesComponent },

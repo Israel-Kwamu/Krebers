@@ -6,8 +6,9 @@ import { Product, Review } from './product.model';
 })
 export class ProductService {
   private readonly REVIEWS_KEY = 'krebers_product_reviews';
+  private readonly PRODUCTS_KEY = 'krebers_products_db';
 
-  private products: Product[] = [
+  private defaultProducts: Product[] = [
     {
       id: 177,
       name: 'Premium Genuine Leather Jacket',
@@ -141,7 +142,7 @@ export class ProductService {
       subCategory: 'Hoodies',
       color: ['Green', 'Black'],
       location: 'Lagos, Nigeria',
-      qty: 0, // Out of stock item for testing filter
+      qty: 0,
       description: 'Cozy thermal fleece lined hoodie with kangaroo pouch pocket.',
       detailedDescription: 'Heavy double-knit cotton fleece keeps you warm with double-lined hood and sturdy drawstrings.',
       reviews: [
@@ -257,7 +258,7 @@ export class ProductService {
       subCategory: 'Tops',
       color: ['White', 'Beige'],
       location: 'Abuja, Nigeria',
-      qty: 0, // Out of stock
+      qty: 0,
       description: 'Silky smooth satin top with button cuffs.',
       detailedDescription: 'Lightweight fluid satin fabric with rounded neckline and button wrist cuffs.',
       reviews: [],
@@ -356,8 +357,37 @@ export class ProductService {
     }
   ];
 
+  private products: Product[] = [];
+
   constructor() {
+    this.initProducts();
     this.loadStoredReviews();
+  }
+
+  private initProducts(): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        const stored = localStorage.getItem(this.PRODUCTS_KEY);
+        if (stored) {
+          this.products = JSON.parse(stored);
+          return;
+        }
+      } catch (e) {
+        console.error('Failed to load products from storage', e);
+      }
+    }
+    this.products = [...this.defaultProducts];
+    this.saveProductsToStorage();
+  }
+
+  private saveProductsToStorage(): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        localStorage.setItem(this.PRODUCTS_KEY, JSON.stringify(this.products));
+      } catch (e) {
+        console.error('Failed to save products to storage', e);
+      }
+    }
   }
 
   private loadStoredReviews(): void {
@@ -436,6 +466,15 @@ export class ProductService {
     return Array.from(subcats).sort();
   }
 
+  // Get all unique available categories
+  getCategories(): string[] {
+    const cats = new Set<string>();
+    this.products.forEach(p => {
+      if (p.category) cats.add(p.category);
+    });
+    return Array.from(cats).sort();
+  }
+
   // Get all unique available colors
   getAllColors(): string[] {
     const colors = new Set<string>();
@@ -452,6 +491,83 @@ export class ProductService {
       if (p.size) sizes.add(p.size);
     });
     return Array.from(sizes);
+  }
+
+  // Admin CRUD Operations
+  addProduct(productData: Partial<Product>): Product {
+    const maxId = this.products.reduce((max, p) => p.id > max ? p.id : max, 400);
+    const newProduct: Product = {
+      id: maxId + 1,
+      name: productData.name || 'New Native Apparel',
+      size: productData.size || 'M',
+      sizes: productData.sizes && productData.sizes.length ? productData.sizes : ['S', 'M', 'L', 'XL'],
+      currentPrice: productData.currentPrice || 10000,
+      prevPrice: productData.prevPrice || 12000,
+      images: productData.images && productData.images.length ? productData.images : ['assets/img/krebers.jpg'],
+      category: productData.category || 'Men',
+      subCategory: productData.subCategory || 'Native',
+      color: productData.color && productData.color.length ? productData.color : ['Black', 'White'],
+      location: productData.location || 'Lagos, Nigeria',
+      qty: productData.qty !== undefined ? productData.qty : 10,
+      description: productData.description || 'Premium hand-crafted African native design.',
+      detailedDescription: productData.detailedDescription || 'Crafted with top-grade fabrics and attention to detail for maximum comfort and distinction.',
+      reviews: [],
+      rating: 5.0,
+      tags: productData.tags || ['new']
+    };
+
+    this.products.unshift(newProduct);
+    this.saveProductsToStorage();
+    return newProduct;
+  }
+
+  updateProduct(id: number, updatedData: Partial<Product>): Product | undefined {
+    const index = this.products.findIndex(p => p.id === id);
+    if (index === -1) return undefined;
+
+    this.products[index] = {
+      ...this.products[index],
+      ...updatedData
+    };
+    this.saveProductsToStorage();
+    return this.products[index];
+  }
+
+  deleteProduct(id: number): boolean {
+    const initialLength = this.products.length;
+    this.products = this.products.filter(p => p.id !== id);
+    if (this.products.length !== initialLength) {
+      this.saveProductsToStorage();
+      return true;
+    }
+    return false;
+  }
+
+  updateStock(id: number, newQty: number): void {
+    const product = this.getProductById(id);
+    if (product) {
+      product.qty = Math.max(0, newQty);
+      this.saveProductsToStorage();
+    }
+  }
+
+  clearAllProductsData(): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      this.products = [];
+      this.saveProductsToStorage();
+      try {
+        localStorage.setItem(this.REVIEWS_KEY, JSON.stringify({}));
+      } catch (e) {
+        console.error('Failed to clear reviews from storage', e);
+      }
+    }
+  }
+
+  loadDemoProducts(): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      this.products = [...this.defaultProducts];
+      this.saveProductsToStorage();
+    }
   }
 }
 

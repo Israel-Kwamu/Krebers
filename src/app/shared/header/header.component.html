@@ -9,8 +9,7 @@
             </div>
         </div>
         <div class="col-lg-4 text-center d-flex align-items-center justify-content-center">
-            <small class="text-dark">Call Us:</small>
-            <a href="#" class="text-muted">(+234) 913 4422 954</a>
+            <!-- Call Us removed -->
         </div>
 
         <div class="col-lg-4 text-center text-lg-end">
@@ -112,12 +111,10 @@
                     </div>
 
                     <!-- CATEGORY DROPDOWN -->
-                    <select class="form-select text-dark border-0 border-start p-3 bg-light" [(ngModel)]="searchCategory"
+                    <select class="form-select text-dark border-0 border-start p-3 bg-light cursor-pointer" [(ngModel)]="searchCategory" (change)="onCategoryChange()"
                         style="width: 170px;">
                         <option value="">All Categories</option>
-                        <option value="Men">Men Section</option>
-                        <option value="Women">Women Section</option>
-                        <option value="Kids">Kids Section</option>
+                        <option *ngFor="let cat of categories" [value]="cat">{{ cat }} Section</option>
                     </select>
 
                     <!-- SEARCH BUTTON -->
@@ -329,8 +326,6 @@
                             </div>
                         </div>
                     </div>
-                    <a href="" class="btn btn-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0"><i
-                            class="fa fa-mobile-alt me-2"></i> (+234) 913 4422 954</a>
                 </div>
             </nav>
         </div>

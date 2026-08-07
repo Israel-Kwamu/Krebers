@@ -1,0 +1,918 @@
+<!-- ==================== SECURE PORTAL LOCK SCREEN ==================== -->
+<div *ngIf="!isAuthenticated">
+  <!-- Single Page Header start -->
+  <div class="container-fluid page-header py-5">
+      <h1 class="text-center text-white display-6">Admin Portal</h1>
+      <ol class="breadcrumb justify-content-center mb-0">
+          <li class="breadcrumb-item"><a routerLink="/" class="text-white-50">Home</a></li>
+          <li class="breadcrumb-item active text-white">Admin Authentication</li>
+      </ol>
+  </div>
+  <!-- Single Page Header End -->
+
+  <!-- Admin Auth Section Start -->
+  <div class="container py-5">
+      <div class="row justify-content-center">
+          <div class="col-md-6 col-lg-5">
+              <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                  <div class="card-header border-0 bg-primary text-white p-4 text-center">
+                      <div class="bg-white rounded-3 px-3 py-2 shadow-sm mb-2 d-inline-flex align-items-center justify-content-center">
+                          <img src="./assets/img/krebers.jpg" alt="Krebers Logo" class="img-fluid" style="max-height: 52px; object-fit: contain;">
+                      </div>
+                      <p class="mb-0 text-white-50">Sign in to access store metrics & admin controls</p>
+                  </div>
+
+                  <div class="card-body p-4 bg-white">
+                      <!-- Error Alert -->
+                      <div class="alert alert-danger py-2 small mb-3 rounded-3 d-flex align-items-center gap-2" *ngIf="authError">
+                          <i class="fas fa-exclamation-circle text-danger"></i>
+                          <span>{{ authError }}</span>
+                      </div>
+
+                      <!-- Lockout Warning -->
+                      <div *ngIf="isLockedOut" class="alert alert-warning border-0 rounded-3 text-center mb-3 p-3">
+                          <i class="fas fa-hourglass-half fs-4 text-warning mb-2 d-block"></i>
+                          <h6 class="fw-bold mb-1">Security Cooldown Active</h6>
+                          <p class="small mb-0">Please wait <strong>{{ lockoutTimeRemaining }}s</strong> before retrying.</p>
+                      </div>
+
+                      <!-- Admin Passcode Form -->
+                      <form (ngSubmit)="verifyPasscode()" *ngIf="!isLockedOut">
+                          <div class="mb-4">
+                              <label class="form-label small fw-bold text-muted mb-1 d-flex justify-content-between align-items-center">
+                                  <span>Admin Security Passcode</span>
+                                  <button type="button" class="btn btn-link p-0 text-primary border-0 bg-transparent text-decoration-none fw-bold" style="font-size: 0.75rem; min-height: auto;" (click)="quickDemoUnlock()">
+                                      <i class="fas fa-magic me-1"></i>Auto-Fill (Krebers2026)
+                                  </button>
+                              </label>
+                              <div class="input-group">
+                                  <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted" style="border: 1px solid #ced4da;">
+                                      <i class="fas fa-lock small"></i>
+                                  </span>
+                                  <input [type]="showPasscode ? 'text' : 'password'" 
+                                         class="form-control border-start-0 py-2 fs-6" 
+                                         [(ngModel)]="passcode" 
+                                         name="passcode" 
+                                         placeholder="Enter passcode" 
+                                         required 
+                                         style="border: 1px solid #ced4da;">
+                                  <button type="button" 
+                                          class="btn btn-light border border-start-0 rounded-end-3 text-muted px-3" 
+                                          (click)="showPasscode = !showPasscode"
+                                          style="border: 1px solid #ced4da;">
+                                      <i class="fas" [class.fa-eye]="!showPasscode" [class.fa-eye-slash]="showPasscode"></i>
+                                  </button>
+                              </div>
+                          </div>
+
+                          <button type="submit" class="btn btn-primary w-100 rounded-pill py-2.5 fw-bold shadow-sm mb-3">
+                              <span>Sign In to Admin Portal</span>
+                          </button>
+                      </form>
+
+                      <div class="text-center pt-3 border-top">
+                          <a routerLink="/" class="text-muted small text-decoration-none fw-bold">
+                              <i class="fas fa-arrow-left me-1"></i> Return to Public Store
+                          </a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- ==================== AUTHENTICATED ADMIN DASHBOARD ==================== -->
+<div *ngIf="isAuthenticated" class="container-fluid py-4 bg-light min-vh-100">
+  <div class="container-xl">
+    
+    <!-- Admin Header & Portal Title -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4 bg-white p-3 p-md-4 rounded-3 shadow-sm border">
+      <div class="d-flex align-items-center gap-3">
+        <div class="bg-primary text-white p-3 rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 52px; height: 52px;">
+          <i class="fas fa-user-shield fs-4"></i>
+        </div>
+        <div>
+          <div class="d-flex align-items-center gap-2">
+            <h2 class="h4 fw-bold mb-0 text-dark">Krebers Admin Management Portal</h2>
+            <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2.5 py-1 small fw-bold">
+              <i class="fas fa-shield-alt me-1"></i>Secure Session
+            </span>
+          </div>
+          <small class="text-muted">Manage payments, track customer orders, upload products & monitor store performance</small>
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <button class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2 rounded-pill px-3" (click)="refreshData()" title="Reload All Storage Data">
+          <i class="fas fa-sync-alt"></i>
+          <span>Refresh</span>
+        </button>
+        <button class="btn btn-outline-dark btn-sm d-flex align-items-center gap-2 rounded-pill px-3" (click)="openChangePinModal()" title="Change Security Passcode">
+          <i class="fas fa-key text-warning"></i>
+          <span>Change Passcode</span>
+        </button>
+        <button class="btn btn-primary btn-sm d-flex align-items-center gap-2 rounded-pill px-3 fw-bold" (click)="openUploadModal()">
+          <i class="fas fa-plus"></i>
+          <span>Upload Product</span>
+        </button>
+        <button class="btn btn-outline-danger btn-sm d-flex align-items-center gap-2 rounded-pill px-3 fw-bold" (click)="clearAllStoreData()" title="Clear/Reset All Store Data">
+          <i class="fas fa-trash-alt"></i>
+          <span>Reset All Data</span>
+        </button>
+        <button class="btn btn-outline-success btn-sm d-flex align-items-center gap-2 rounded-pill px-3 fw-bold" (click)="loadDemoProducts()" title="Seed/Reload Mock Demo Products">
+          <i class="fas fa-seedling"></i>
+          <span>Seed Demo Data</span>
+        </button>
+        <button class="btn btn-danger btn-sm d-flex align-items-center gap-2 rounded-pill px-3 fw-bold" (click)="lockPortal()" title="Lock Admin Access">
+          <i class="fas fa-lock"></i>
+          <span>Lock Portal</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Admin Tabs Navigation -->
+    <ul class="nav nav-pills bg-white p-2 rounded-3 shadow-sm mb-4 border d-flex flex-nowrap overflow-auto align-items-center gap-2">
+      <li class="nav-item">
+        <button class="nav-link fw-bold px-3 py-2 rounded-2 d-flex align-items-center gap-2" 
+                [class.active]="activeTab === 'overview'" 
+                (click)="activeTab = 'overview'">
+          <i class="fas fa-chart-line"></i>
+          <span>Overview & Metrics</span>
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link fw-bold px-3 py-2 rounded-2 d-flex align-items-center gap-2" 
+                [class.active]="activeTab === 'orders'" 
+                (click)="activeTab = 'orders'">
+          <i class="fas fa-shipping-fast"></i>
+          <span>Orders & Tracking</span>
+          <span class="badge bg-danger rounded-pill" *ngIf="pendingOrdersCount > 0">{{ pendingOrdersCount }}</span>
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link fw-bold px-3 py-2 rounded-2 d-flex align-items-center gap-2" 
+                [class.active]="activeTab === 'payments'" 
+                (click)="activeTab = 'payments'">
+          <i class="fas fa-credit-card"></i>
+          <span>Payments</span>
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link fw-bold px-3 py-2 rounded-2 d-flex align-items-center gap-2" 
+                [class.active]="activeTab === 'products'" 
+                (click)="activeTab = 'products'">
+          <i class="fas fa-tshirt"></i>
+          <span>Products & Catalog</span>
+          <span class="badge bg-warning text-dark rounded-pill" *ngIf="outOfStockProductsCount > 0">{{ outOfStockProductsCount }} Out</span>
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link fw-bold px-3 py-2 rounded-2 d-flex align-items-center gap-2" 
+                [class.active]="activeTab === 'customers'" 
+                (click)="activeTab = 'customers'">
+          <i class="fas fa-users"></i>
+          <span>Customers</span>
+        </button>
+      </li>
+    </ul>
+
+    <!-- ==================== TAB 1: OVERVIEW ==================== -->
+    <div *ngIf="activeTab === 'overview'" class="fade-in">
+      <!-- Summary Metric Cards -->
+      <div class="row g-3 mb-4">
+        <!-- Total Revenue -->
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="card border-0 shadow-sm rounded-3 p-3 h-100 bg-white border-start border-4 border-success">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted small fw-bold text-uppercase">Total Store Revenue</span>
+              <div class="p-2 bg-success bg-opacity-10 text-success rounded-circle">
+                <i class="fas fa-wallet fs-5"></i>
+              </div>
+            </div>
+            <h3 class="h4 fw-bold mb-1 text-dark">{{ totalRevenue | fxCurrency }}</h3>
+            <small class="text-success fw-bold"><i class="fas fa-arrow-up me-1"></i>Verified Paid Transactions</small>
+          </div>
+        </div>
+
+        <!-- Total Orders -->
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="card border-0 shadow-sm rounded-3 p-3 h-100 bg-white border-start border-4 border-primary">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted small fw-bold text-uppercase">Total Orders Logged</span>
+              <div class="p-2 bg-primary bg-opacity-10 text-primary rounded-circle">
+                <i class="fas fa-box-open fs-5"></i>
+              </div>
+            </div>
+            <h3 class="h4 fw-bold mb-1 text-dark">{{ totalOrdersCount }} Orders</h3>
+            <small class="text-primary fw-bold">{{ pendingOrdersCount }} Pending Fulfillment</small>
+          </div>
+        </div>
+
+        <!-- Active Products -->
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="card border-0 shadow-sm rounded-3 p-3 h-100 bg-white border-start border-4 border-info">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted small fw-bold text-uppercase">Total Products</span>
+              <div class="p-2 bg-info bg-opacity-10 text-info rounded-circle">
+                <i class="fas fa-tshirt fs-5"></i>
+              </div>
+            </div>
+            <h3 class="h4 fw-bold mb-1 text-dark">{{ products.length }} Items</h3>
+            <small class="text-muted"><i class="fas fa-layer-group me-1"></i>Across Men, Women & Kids</small>
+          </div>
+        </div>
+
+        <!-- Pending Payments -->
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="card border-0 shadow-sm rounded-3 p-3 h-100 bg-white border-start border-4 border-warning">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted small fw-bold text-uppercase">Pending Payments</span>
+              <div class="p-2 bg-warning bg-opacity-10 text-warning rounded-circle">
+                <i class="fas fa-hourglass-half fs-5"></i>
+              </div>
+            </div>
+            <h3 class="h4 fw-bold mb-1 text-dark">{{ pendingPaymentsTotal | fxCurrency }}</h3>
+            <small class="text-warning fw-bold"><i class="fas fa-exclamation-circle me-1"></i>Requires Bank/Cash Verification</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Orders Table Preview -->
+      <div class="card border-0 shadow-sm rounded-3 bg-white p-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h3 class="h5 fw-bold mb-0 text-dark d-flex align-items-center gap-2">
+            <i class="fas fa-clock text-primary"></i>
+            Recent Customer Orders
+          </h3>
+          <button class="btn btn-sm btn-link text-primary text-decoration-none fw-bold" (click)="activeTab = 'orders'">
+            View All Orders <i class="fas fa-arrow-right ms-1"></i>
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light text-muted small text-uppercase">
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Payment</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let order of orders.slice(0, 5)">
+                <td class="fw-bold text-primary">{{ order.id }}</td>
+                <td>
+                  <div class="fw-bold text-dark">{{ order.userName }}</div>
+                  <small class="text-muted">{{ order.userEmail }}</small>
+                </td>
+                <td class="small text-muted">{{ order.createdAt | date:'shortDate' }}</td>
+                <td>
+                  <span class="badge rounded-pill" [ngClass]="getPaymentStatusBadgeClass(order.paymentStatus || 'Paid')">
+                    {{ order.paymentStatus || 'Paid' }}
+                  </span>
+                  <div class="small text-muted mt-1">{{ order.paymentMethod }}</div>
+                </td>
+                <td class="fw-bold text-dark">{{ order.total | fxCurrency }}</td>
+                <td>
+                  <span class="badge rounded-pill px-3 py-2" [ngClass]="getStatusBadgeClass(order.status)">
+                    {{ order.status }}
+                  </span>
+                </td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-outline-primary rounded-circle me-1" (click)="viewOrderDetails(order)" title="View Invoice">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-success rounded-circle" (click)="openTrackingModal(order)" title="Update Tracking">
+                    <i class="fas fa-truck"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 2: ORDERS & TRACKING ==================== -->
+    <div *ngIf="activeTab === 'orders'" class="fade-in">
+      <div class="card border-0 shadow-sm rounded-3 bg-white p-4 mb-4">
+        <!-- Search & Filters -->
+        <div class="row g-3 align-items-center mb-4">
+          <div class="col-12 col-md-5">
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
+              <input type="text" class="form-control border-start-0 bg-light" 
+                     placeholder="Search order ID, customer name, email..." 
+                     [(ngModel)]="orderSearchQuery">
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="d-flex align-items-center gap-2">
+              <label class="small fw-bold text-muted text-nowrap">Filter Status:</label>
+              <select class="form-select bg-light" [(ngModel)]="selectedOrderStatusFilter">
+                <option value="All">All Orders</option>
+                <option value="Pending">Pending</option>
+                <option value="Processing">Processing</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-12 col-md-3 text-end">
+            <span class="badge bg-secondary rounded-pill px-3 py-2">
+              Showing {{ filteredOrders.length }} of {{ orders.length }} Orders
+            </span>
+          </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light text-muted small text-uppercase">
+              <tr>
+                <th>Order Details</th>
+                <th>Customer Info</th>
+                <th>Items Ordered</th>
+                <th>Total</th>
+                <th>Tracking / Logistics</th>
+                <th>Fulfillment Status</th>
+                <th class="text-end">Manage</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let order of filteredOrders">
+                <td>
+                  <div class="fw-bold text-primary fs-6">{{ order.id }}</div>
+                  <small class="text-muted"><i class="far fa-calendar-alt me-1"></i>{{ order.createdAt | date:'mediumDate' }}</small>
+                </td>
+                <td>
+                  <div class="fw-bold text-dark">{{ order.userName }}</div>
+                  <div class="small text-muted">{{ order.userEmail }}</div>
+                  <div class="small text-muted"><i class="fas fa-map-marker-alt me-1 text-danger"></i>{{ order.shippingAddress?.city }}, {{ order.shippingAddress?.country }}</div>
+                </td>
+                <td>
+                  <div class="d-flex flex-column gap-1">
+                    <span *ngFor="let item of order.items" class="small text-dark">
+                      • {{ item.qty }}x {{ item.name }}
+                    </span>
+                  </div>
+                </td>
+                <td class="fw-bold text-dark fs-6">
+                  {{ order.total | fxCurrency }}
+                </td>
+                <td>
+                  <div *ngIf="order.trackingNumber" class="small">
+                    <span class="fw-bold text-dark"><i class="fas fa-shipping-fast text-info me-1"></i>{{ order.carrier || 'Logistics' }}</span>
+                    <div class="font-monospace text-primary bg-light px-2 py-1 rounded d-inline-block mt-1">{{ order.trackingNumber }}</div>
+                  </div>
+                  <span *ngIf="!order.trackingNumber" class="badge bg-light text-muted border">No Tracking Yet</span>
+                </td>
+                <td>
+                  <span class="badge rounded-pill px-3 py-2" [ngClass]="getStatusBadgeClass(order.status)">
+                    {{ order.status }}
+                  </span>
+                </td>
+                <td class="text-end">
+                  <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-primary" (click)="viewOrderDetails(order)" title="View Order Receipt">
+                      <i class="fas fa-file-invoice me-1"></i> Invoice
+                    </button>
+                    <button class="btn btn-outline-success" (click)="openTrackingModal(order)" title="Update Status & Courier">
+                      <i class="fas fa-edit me-1"></i> Update
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr *ngIf="filteredOrders.length === 0">
+                <td colspan="7" class="text-center py-5 text-muted">
+                  <i class="fas fa-box-open fs-1 text-secondary mb-3 d-block opacity-50"></i>
+                  <p class="mb-0 fw-bold">No customer orders matching your search filters.</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 3: PAYMENTS ==================== -->
+    <div *ngIf="activeTab === 'payments'" class="fade-in">
+      <div class="row g-3 mb-4">
+        <div class="col-12 col-md-4">
+          <div class="card border-0 shadow-sm rounded-3 p-3 bg-white border-start border-4 border-success">
+            <span class="text-muted small fw-bold text-uppercase">Verified Collected Revenue</span>
+            <h3 class="h4 fw-bold text-success mb-0 mt-2">{{ paidPaymentsTotal | fxCurrency }}</h3>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="card border-0 shadow-sm rounded-3 p-3 bg-white border-start border-4 border-warning">
+            <span class="text-muted small fw-bold text-uppercase">Pending Payment Verification</span>
+            <h3 class="h4 fw-bold text-warning mb-0 mt-2">{{ pendingPaymentsTotal | fxCurrency }}</h3>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="card border-0 shadow-sm rounded-3 p-3 bg-white border-start border-4 border-primary">
+            <span class="text-muted small fw-bold text-uppercase">Primary Gateways</span>
+            <div class="fw-bold text-dark mt-2">Paystack, Flutterwave, Bank Transfer</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm rounded-3 bg-white p-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+          <h3 class="h5 fw-bold mb-0 text-dark">
+            <i class="fas fa-file-signature text-primary me-2"></i>Payment Transaction Records
+          </h3>
+          <div class="d-flex align-items-center gap-2">
+            <label class="small fw-bold text-muted">Status Filter:</label>
+            <select class="form-select bg-light w-auto" [(ngModel)]="selectedPaymentFilter">
+              <option value="All">All Transactions</option>
+              <option value="Paid">Paid</option>
+              <option value="Pending Verification">Pending Verification</option>
+              <option value="Refunded">Refunded</option>
+              <option value="Failed">Failed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light text-muted small text-uppercase">
+              <tr>
+                <th>Transaction Reference</th>
+                <th>Customer</th>
+                <th>Payment Method</th>
+                <th>Amount</th>
+                <th>Payment Status</th>
+                <th>Date</th>
+                <th class="text-end">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let order of filteredPayments">
+                <td class="fw-bold text-primary">{{ order.id }}</td>
+                <td>
+                  <div class="fw-bold text-dark">{{ order.userName }}</div>
+                  <small class="text-muted">{{ order.userEmail }}</small>
+                </td>
+                <td>
+                  <div class="fw-bold text-dark">{{ order.paymentMethod }}</div>
+                </td>
+                <td class="fw-bold text-dark fs-6">{{ order.total | fxCurrency }}</td>
+                <td>
+                  <span class="badge rounded-pill px-3 py-2" [ngClass]="getPaymentStatusBadgeClass(order.paymentStatus || 'Paid')">
+                    {{ order.paymentStatus || 'Paid' }}
+                  </span>
+                </td>
+                <td class="small text-muted">{{ order.createdAt | date:'short' }}</td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-outline-primary" (click)="openPaymentModal(order)">
+                    <i class="fas fa-edit me-1"></i> Mark Status
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 4: PRODUCTS & CATALOG ==================== -->
+    <div *ngIf="activeTab === 'products'" class="fade-in">
+      <div class="card border-0 shadow-sm rounded-3 bg-white p-4 mb-4">
+        <!-- Search, Filter & Action Bar -->
+        <div class="row g-3 align-items-center mb-4">
+          <div class="col-12 col-md-5">
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
+              <input type="text" class="form-control border-start-0 bg-light" 
+                     placeholder="Search product name, category..." 
+                     [(ngModel)]="productSearchQuery">
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="d-flex align-items-center gap-2">
+              <label class="small fw-bold text-muted text-nowrap">Category:</label>
+              <select class="form-select bg-light" [(ngModel)]="selectedCategoryFilter">
+                <option value="All">All Categories</option>
+                <option value="Men">Men</option>
+                <option value="Women">Women</option>
+                <option value="Kids">Kids</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-12 col-md-3 text-end">
+            <button class="btn btn-primary fw-bold rounded-pill px-4 shadow-sm" (click)="openUploadModal()">
+              <i class="fas fa-cloud-upload-alt me-2"></i>Upload Product
+            </button>
+          </div>
+        </div>
+
+        <!-- Products List Table -->
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light text-muted small text-uppercase">
+              <tr>
+                <th>Product Info</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock Level</th>
+                <th>Tags</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of filteredProducts">
+                <td>
+                  <div class="d-flex align-items-center gap-3">
+                    <img [src]="product.images[0] || 'assets/img/krebers.jpg'" class="rounded border" style="width: 50px; height: 50px; object-fit: cover;">
+                    <div>
+                      <div class="fw-bold text-dark mb-0">{{ product.name }}</div>
+                      <small class="text-muted">ID: #{{ product.id }} | Size: {{ product.size }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge bg-light text-dark border">{{ product.category }} &rsaquo; {{ product.subCategory }}</span>
+                </td>
+                <td>
+                  <div class="fw-bold text-primary">{{ product.currentPrice | fxCurrency }}</div>
+                  <small class="text-muted text-decoration-line-through" *ngIf="product.prevPrice">{{ product.prevPrice | fxCurrency }}</small>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-sm btn-outline-secondary py-0 px-2 rounded-circle" (click)="adjustStock(product, -1)" title="Decrease Stock">-</button>
+                    <span class="badge px-3 py-2" [ngClass]="product.qty > 5 ? 'bg-success' : (product.qty > 0 ? 'bg-warning text-dark' : 'bg-danger')">
+                      {{ product.qty }} in stock
+                    </span>
+                    <button class="btn btn-sm btn-outline-secondary py-0 px-2 rounded-circle" (click)="adjustStock(product, 1)" title="Increase Stock">+</button>
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex flex-wrap gap-1">
+                    <span *ngFor="let tag of product.tags" class="badge bg-secondary bg-opacity-10 text-secondary text-uppercase" style="font-size: 0.65rem;">
+                      {{ tag }}
+                    </span>
+                  </div>
+                </td>
+                <td class="text-end">
+                  <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-primary" (click)="openEditProductModal(product)" title="Edit Details">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-outline-danger" (click)="deleteProduct(product)" title="Delete Product">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 5: CUSTOMERS ==================== -->
+    <div *ngIf="activeTab === 'customers'" class="fade-in">
+      <div class="card border-0 shadow-sm rounded-3 bg-white p-4">
+        <h3 class="h5 fw-bold mb-4 text-dark">
+          <i class="fas fa-user-friends text-primary me-2"></i>Registered Customer Accounts
+        </h3>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light text-muted small text-uppercase">
+              <tr>
+                <th>Customer Name</th>
+                <th>Email Address</th>
+                <th>User ID</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let usr of users">
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <img [src]="usr.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=50&auto=format&fit=crop&q=80'" class="rounded-circle border" style="width: 32px; height: 32px; object-fit: cover;">
+                    <span class="fw-bold text-dark">{{ usr.displayName }}</span>
+                  </div>
+                </td>
+                <td class="text-muted">{{ usr.email }}</td>
+                <td class="font-monospace small text-primary">{{ usr.uid }}</td>
+                <td><span class="badge bg-success bg-opacity-10 text-success fw-bold">Verified Customer</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== UPLOAD / EDIT PRODUCT MODAL ==================== -->
+<div class="modal fade show d-block bg-dark bg-opacity-50" *ngIf="isUploadingProduct" style="z-index: 1055;">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg rounded-3">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title fw-bold d-flex align-items-center gap-2">
+          <i class="fas" [class.fa-plus-circle]="!editingProduct" [class.fa-edit]="editingProduct"></i>
+          {{ editingProduct ? 'Edit Product Details' : 'Upload New Store Product' }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="isUploadingProduct = false"></button>
+      </div>
+      <div class="modal-body p-4 bg-light">
+        <form (ngSubmit)="saveProduct()">
+          <div class="row g-3">
+            <div class="col-12 col-md-8">
+              <label class="form-label fw-bold small text-dark">Product Title / Name *</label>
+              <input type="text" class="form-control" [(ngModel)]="productForm.name" name="name" placeholder="e.g. Traditional Handcrafted Agbada Set" required>
+            </div>
+            <div class="col-6 col-md-2">
+              <label class="form-label fw-bold small text-dark">Category</label>
+              <select class="form-select" [(ngModel)]="productForm.category" name="category">
+                <option value="Men">Men</option>
+                <option value="Women">Women</option>
+                <option value="Kids">Kids</option>
+              </select>
+            </div>
+            <div class="col-6 col-md-2">
+              <label class="form-label fw-bold small text-dark">Subcategory</label>
+              <input type="text" class="form-control" [(ngModel)]="productForm.subCategory" name="subCategory" placeholder="e.g. Native, Shirts, Hoodies">
+            </div>
+
+            <div class="col-6 col-md-4">
+              <label class="form-label fw-bold small text-dark">Selling Price (NGN) *</label>
+              <input type="number" class="form-control" [(ngModel)]="productForm.currentPrice" name="currentPrice" required>
+            </div>
+            <div class="col-6 col-md-4">
+              <label class="form-label fw-bold small text-dark">Previous Price (For Discount)</label>
+              <input type="number" class="form-control" [(ngModel)]="productForm.prevPrice" name="prevPrice">
+            </div>
+            <div class="col-6 col-md-4">
+              <label class="form-label fw-bold small text-dark">Initial Stock Qty</label>
+              <input type="number" class="form-control" [(ngModel)]="productForm.qty" name="qty">
+            </div>
+
+            <div class="col-6 col-md-4">
+              <label class="form-label fw-bold small text-dark">Primary Size</label>
+              <input type="text" class="form-control" [(ngModel)]="productForm.size" name="size" placeholder="L">
+            </div>
+            <div class="col-6 col-md-4">
+              <label class="form-label fw-bold small text-dark">Available Sizes (Comma Separated)</label>
+              <input type="text" class="form-control" [(ngModel)]="productForm.sizesText" name="sizesText" placeholder="S, M, L, XL">
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="form-label fw-bold small text-dark">Available Colors</label>
+              <input type="text" class="form-control" [(ngModel)]="productForm.colorText" name="colorText" placeholder="Black, Navy, Blue">
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-bold small text-dark">Primary Image URL</label>
+              <input type="text" class="form-control" [(ngModel)]="productForm.imageUrl1" name="imageUrl1" placeholder="assets/img/krebers.jpg or https://...">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-bold small text-dark">Secondary Gallery Image URL</label>
+              <input type="text" class="form-control" [(ngModel)]="productForm.imageUrl2" name="imageUrl2" placeholder="assets/img/header-img.png">
+            </div>
+
+            <!-- Image Previews -->
+            <div class="col-12" *ngIf="productForm.imageUrl1">
+              <div class="small fw-bold text-muted mb-2">Live Image Preview:</div>
+              <div class="d-flex gap-3">
+                <img [src]="productForm.imageUrl1" class="rounded border shadow-sm" style="width: 80px; height: 80px; object-fit: cover;">
+                <img *ngIf="productForm.imageUrl2" [src]="productForm.imageUrl2" class="rounded border shadow-sm" style="width: 80px; height: 80px; object-fit: cover;">
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label fw-bold small text-dark">Short Product Summary</label>
+              <input type="text" class="form-control" [(ngModel)]="productForm.description" name="description" placeholder="Brief 1-sentence product summary">
+            </div>
+
+            <div class="col-12">
+              <label class="form-label fw-bold small text-dark">Full Detailed Description</label>
+              <textarea class="form-control" rows="3" [(ngModel)]="productForm.detailedDescription" name="detailedDescription" placeholder="Fabric details, care instructions, and sizing notes..."></textarea>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label fw-bold small text-dark">Tags (e.g. featured, top, new)</label>
+              <input type="text" class="form-control" [(ngModel)]="productForm.tagsText" name="tagsText" placeholder="featured, top, new">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer bg-white">
+        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" (click)="isUploadingProduct = false">Cancel</button>
+        <button type="button" class="btn btn-primary fw-bold rounded-pill px-4 shadow-sm" (click)="saveProduct()">
+          <i class="fas fa-check me-1"></i> Save & Publish Product
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TRACKING & ORDER STATUS MODAL ==================== -->
+<div class="modal fade show d-block bg-dark bg-opacity-50" *ngIf="editingTrackingOrder" style="z-index: 1055;">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-3">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title fw-bold">Update Logistics & Order Status</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="editingTrackingOrder = null"></button>
+      </div>
+      <div class="modal-body p-4 bg-light">
+        <div class="mb-3">
+          <label class="form-label fw-bold small text-dark">Fulfillment Status</label>
+          <select class="form-select" [(ngModel)]="statusInput">
+            <option value="Pending">Pending</option>
+            <option value="Processing">Processing</option>
+            <option value="Shipped">Shipped</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold small text-dark">Logistics Courier Company</label>
+          <input type="text" class="form-control" [(ngModel)]="carrierInput" placeholder="e.g. GIG Logistics, DHL Express, Red Star">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold small text-dark">Tracking Number / Waybill ID</label>
+          <input type="text" class="form-control" [(ngModel)]="trackingNumberInput" placeholder="e.g. GIG-99812-LA">
+        </div>
+      </div>
+      <div class="modal-footer bg-white">
+        <button type="button" class="btn btn-outline-secondary rounded-pill" (click)="editingTrackingOrder = null">Cancel</button>
+        <button type="button" class="btn btn-success fw-bold rounded-pill px-4" (click)="saveTrackingAndStatus()">
+          <i class="fas fa-check me-1"></i> Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PAYMENT STATUS MODAL ==================== -->
+<div class="modal fade show d-block bg-dark bg-opacity-50" *ngIf="editingPaymentOrder" style="z-index: 1055;">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-3">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title fw-bold">Manage Payment Verification</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="editingPaymentOrder = null"></button>
+      </div>
+      <div class="modal-body p-4 bg-light">
+        <div class="mb-3">
+          <label class="form-label fw-bold small text-dark">Payment Status</label>
+          <select class="form-select" [(ngModel)]="paymentStatusInput">
+            <option value="Paid">Paid / Confirmed</option>
+            <option value="Pending Verification">Pending Verification</option>
+            <option value="Refunded">Refunded</option>
+            <option value="Failed">Failed</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold small text-dark">Admin Verification Notes</label>
+          <textarea class="form-control" rows="3" [(ngModel)]="paymentNotesInput" placeholder="Bank teller reference, receipt ID or payment note..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer bg-white">
+        <button type="button" class="btn btn-outline-secondary rounded-pill" (click)="editingPaymentOrder = null">Cancel</button>
+        <button type="button" class="btn btn-success fw-bold rounded-pill px-4" (click)="savePaymentStatus()">
+          <i class="fas fa-check me-1"></i> Update Payment
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ORDER RECEIPT / INVOICE MODAL ==================== -->
+<div class="modal fade show d-block bg-dark bg-opacity-50" *ngIf="selectedOrder" style="z-index: 1055;">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-3">
+      <div class="modal-header bg-dark text-white print-hide">
+        <h5 class="modal-title fw-bold">Krebers Official Order Invoice</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeOrderDetails()"></button>
+      </div>
+      <div class="modal-body p-4 bg-white" id="invoiceContent">
+        <!-- Receipt Header -->
+        <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+          <div>
+            <h3 class="fw-bold text-dark mb-0">KREBERS APPAREL</h3>
+            <small class="text-muted">Luxury African & Contemporary Wear</small>
+          </div>
+          <div class="text-end">
+            <h5 class="fw-bold text-primary mb-0">{{ selectedOrder.id }}</h5>
+            <small class="text-muted">{{ selectedOrder.createdAt | date:'medium' }}</small>
+          </div>
+        </div>
+
+        <!-- Customer & Delivery Info -->
+        <div class="row g-3 mb-4">
+          <div class="col-6">
+            <h6 class="fw-bold text-uppercase text-muted small">Customer Info</h6>
+            <div class="fw-bold text-dark">{{ selectedOrder.userName }}</div>
+            <div class="small text-muted">{{ selectedOrder.userEmail }}</div>
+          </div>
+          <div class="col-6 text-end">
+            <h6 class="fw-bold text-uppercase text-muted small">Delivery Address</h6>
+            <div class="small text-dark">{{ selectedOrder.shippingAddress?.street }}</div>
+            <div class="small text-dark">{{ selectedOrder.shippingAddress?.city }}, {{ selectedOrder.shippingAddress?.state }}</div>
+            <div class="small text-muted">{{ selectedOrder.shippingAddress?.phone }}</div>
+          </div>
+        </div>
+
+        <!-- Items Table -->
+        <table class="table table-bordered align-middle mb-4">
+          <thead class="table-light">
+            <tr>
+              <th>Item Description</th>
+              <th class="text-center">Qty</th>
+              <th class="text-end">Unit Price</th>
+              <th class="text-end">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of selectedOrder.items">
+              <td>{{ item.name }}</td>
+              <td class="text-center">{{ item.qty }}</td>
+              <td class="text-end">{{ item.currentPrice | fxCurrency }}</td>
+              <td class="text-end fw-bold">{{ (item.currentPrice * item.qty) | fxCurrency }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3" class="text-end fw-bold">Grand Total:</td>
+              <td class="text-end fw-bold text-primary fs-5">{{ selectedOrder.total | fxCurrency }}</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="bg-light p-3 rounded d-flex flex-column gap-2">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <span class="fw-bold text-dark">Payment Method:</span> {{ selectedOrder.paymentMethod }}
+            </div>
+            <div>
+              <span class="badge px-3 py-2" [ngClass]="getPaymentStatusBadgeClass(selectedOrder.paymentStatus || 'Paid')">
+                {{ selectedOrder.paymentStatus || 'Paid' }}
+              </span>
+            </div>
+          </div>
+          <div *ngIf="selectedOrder.transferSenderName || selectedOrder.transferReference || selectedOrder.transferSenderBank" class="p-2 bg-white rounded border extra-small text-dark mt-1">
+            <span class="fw-bold text-primary d-block mb-1"><i class="fas fa-university me-1"></i> Direct Bank Transfer Verification Details:</span>
+            <div *ngIf="selectedOrder.transferSenderBank"><span class="text-muted">Sending Bank:</span> <strong>{{ selectedOrder.transferSenderBank }}</strong></div>
+            <div *ngIf="selectedOrder.transferSenderName"><span class="text-muted">Sender Name:</span> <strong>{{ selectedOrder.transferSenderName }}</strong></div>
+            <div *ngIf="selectedOrder.transferReference"><span class="text-muted">Ref/Session ID:</span> <strong class="font-monospace text-dark">{{ selectedOrder.transferReference }}</strong></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer bg-light print-hide">
+        <button type="button" class="btn btn-outline-secondary rounded-pill" (click)="closeOrderDetails()">Close</button>
+        <button type="button" class="btn btn-primary fw-bold rounded-pill px-4" (click)="printInvoice()">
+          <i class="fas fa-print me-1"></i> Print Invoice
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CHANGE ADMIN PASSCODE MODAL ==================== -->
+<div class="modal fade show d-block bg-dark bg-opacity-50" *ngIf="showChangePinModal" style="z-index: 1055;">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-3">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title fw-bold d-flex align-items-center gap-2">
+          <i class="fas fa-key text-warning"></i>
+          <span>Update Admin Master Passcode</span>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="showChangePinModal = false"></button>
+      </div>
+      <div class="modal-body p-4 bg-light">
+        <form (ngSubmit)="saveNewPin()">
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-dark">Current Passcode *</label>
+            <input type="password" class="form-control" [(ngModel)]="currentPinInput" name="currentPin" placeholder="Enter existing passcode" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-dark">New Security Passcode *</label>
+            <input type="password" class="form-control" [(ngModel)]="newPinInput" name="newPin" placeholder="Min 4 digits or characters" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-dark">Confirm New Passcode *</label>
+            <input type="password" class="form-control" [(ngModel)]="confirmPinInput" name="confirmPin" placeholder="Re-enter new passcode" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer bg-white">
+        <button type="button" class="btn btn-outline-secondary rounded-pill" (click)="showChangePinModal = false">Cancel</button>
+        <button type="button" class="btn btn-primary fw-bold rounded-pill px-4 shadow-sm" (click)="saveNewPin()">
+          <i class="fas fa-save me-1"></i> Save New Passcode
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

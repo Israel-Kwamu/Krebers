@@ -64,9 +64,7 @@ export class ShopComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.searchQuery = (params['q'] || '').trim();
       this.selectedCategory = (params['cat'] || '').trim();
-      if (params['subcat']) {
-        this.selectedSubCategory = params['subcat'].trim();
-      }
+      this.selectedSubCategory = (params['subcat'] || '').trim();
       this.updateAvailableSubCategories();
       this.applyFilters();
     });
@@ -89,6 +87,10 @@ export class ShopComponent implements OnInit {
         p.name.toLowerCase().includes(q) ||
         p.category.toLowerCase().includes(q) ||
         (p.subCategory && p.subCategory.toLowerCase().includes(q)) ||
+        (p.description && p.description.toLowerCase().includes(q)) ||
+        (p.detailedDescription && p.detailedDescription.toLowerCase().includes(q)) ||
+        (p.location && p.location.toLowerCase().includes(q)) ||
+        p.tags?.some(t => t.toLowerCase().includes(q)) ||
         p.color?.some(c => c.toLowerCase().includes(q))
       );
     }
@@ -166,13 +168,22 @@ export class ShopComponent implements OnInit {
   // FILTER EVENT HANDLERS
   // ---------------------------
   selectCategory(category: string): void {
-    if (this.selectedCategory === category) {
+    if (category === '') {
+      this.selectedCategory = '';
+    } else if (this.selectedCategory.toLowerCase() === category.toLowerCase()) {
       this.selectedCategory = ''; // toggle off
     } else {
       this.selectedCategory = category;
     }
     this.selectedSubCategory = ''; // Reset subcategory when category changes
     this.updateAvailableSubCategories();
+    this.router.navigate(['/shop'], {
+      queryParams: {
+        cat: this.selectedCategory ? this.selectedCategory : null,
+        subcat: null
+      },
+      queryParamsHandling: 'merge'
+    });
     this.applyFilters();
   }
 
@@ -238,6 +249,13 @@ export class ShopComponent implements OnInit {
     this.selectedCategory = '';
     this.selectedSubCategory = '';
     this.updateAvailableSubCategories();
+    this.router.navigate(['/shop'], {
+      queryParams: {
+        cat: null,
+        subcat: null
+      },
+      queryParamsHandling: 'merge'
+    });
     this.applyFilters();
   }
 

@@ -20,6 +20,7 @@ export class HeaderComponent implements OnInit {
 
   searchQuery: string = '';
   searchCategory: string = '';
+  categories: string[] = ['Men', 'Women', 'Kids'];
   suggestions: Product[] = [];
   searchControl: FormControl = new FormControl('');
   showSuggestions: boolean = false;
@@ -43,6 +44,12 @@ export class HeaderComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // Load dynamic categories
+    const fetchedCats = this.productService.getCategories();
+    if (fetchedCats && fetchedCats.length) {
+      this.categories = fetchedCats;
+    }
+
     // Live search listener with debounce
     this.searchControl.valueChanges.pipe(
       debounceTime(200),
@@ -149,9 +156,25 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+  // Category dropdown selection change handler
+  onCategoryChange(): void {
+    const val = (this.searchControl.value || this.searchQuery || '').trim();
+    if (val) {
+      this.getSuggestions(val).subscribe(results => {
+        this.suggestions = results;
+        this.showSuggestions = true;
+      });
+    }
+
+    // Automatically trigger search or navigate to update shop view if on shop page or user selects a category
+    if (this.router.url.includes('/shop')) {
+      this.performSearch();
+    }
+  }
+
   // Manual search execution (search button or Enter)
   performSearch(): void {
-    const query = (this.searchQuery || this.searchControl.value || '').trim().toLowerCase();
+    const query = (this.searchQuery || this.searchControl.value || '').trim();
     this.showSuggestions = false;
 
     this.router.navigate(['/shop'], {
@@ -171,10 +194,12 @@ export class HeaderComponent implements OnInit {
     const filtered = allProducts.filter(product => {
       const matchName = product.name.toLowerCase().includes(q);
       const matchCategoryName = product.category.toLowerCase().includes(q);
-      const matchSubCategory = product.subCategory.toLowerCase().includes(q);
-      const matchColor = product.color?.some(c => c.toLowerCase().includes(q));
+      const matchSubCategory = product.subCategory?.toLowerCase().includes(q) || false;
+      const matchColor = product.color?.some(c => c.toLowerCase().includes(q)) || false;
+      const matchDesc = product.description?.toLowerCase().includes(q) || false;
+      const matchTag = product.tags?.some(t => t.toLowerCase().includes(q)) || false;
 
-      const matchesQuery = matchName || matchCategoryName || matchSubCategory || matchColor;
+      const matchesQuery = matchName || matchCategoryName || matchSubCategory || matchColor || matchDesc || matchTag;
 
       const matchesSelectedCategory =
         !this.searchCategory ||
@@ -198,6 +223,9 @@ export class HeaderComponent implements OnInit {
     this.searchControl.setValue('');
     this.suggestions = [];
     this.showSuggestions = false;
+    if (this.router.url.includes('/shop')) {
+      this.performSearch();
+    }
   }
 }
 
