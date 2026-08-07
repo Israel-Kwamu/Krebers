@@ -39,11 +39,8 @@
                       <!-- Admin Passcode Form -->
                       <form (ngSubmit)="verifyPasscode()" *ngIf="!isLockedOut">
                           <div class="mb-4">
-                              <label class="form-label small fw-bold text-muted mb-1 d-flex justify-content-between align-items-center">
+                              <label class="form-label small fw-bold text-muted mb-1">
                                   <span>Admin Security Passcode</span>
-                                  <button type="button" class="btn btn-link p-0 text-primary border-0 bg-transparent text-decoration-none fw-bold" style="font-size: 0.75rem; min-height: auto;" (click)="quickDemoUnlock()">
-                                      <i class="fas fa-magic me-1"></i>Auto-Fill (Krebers2026)
-                                  </button>
                               </label>
                               <div class="input-group">
                                   <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted" style="border: 1px solid #ced4da;">
@@ -89,14 +86,14 @@
     <!-- Admin Header & Portal Title -->
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4 bg-white p-3 p-md-4 rounded-3 shadow-sm border">
       <div class="d-flex align-items-center gap-3">
-        <div class="bg-primary text-white p-3 rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 52px; height: 52px;">
-          <i class="fas fa-user-shield fs-4"></i>
+        <div class="bg-white border rounded-circle p-1 d-flex align-items-center justify-content-center shadow-sm" style="width: 52px; height: 52px; overflow: hidden;">
+          <img src="./assets/img/krebers.jpg" alt="Krebers Logo" class="img-fluid rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
         <div>
           <div class="d-flex align-items-center gap-2">
             <h2 class="h4 fw-bold mb-0 text-dark">Krebers Admin Management Portal</h2>
-            <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2.5 py-1 small fw-bold">
-              <i class="fas fa-shield-alt me-1"></i>Secure Session
+            <span class="badge bg-dark rounded-pill px-3 py-1.5 small fw-bold shadow-sm border border-success" style="color: #4ade80 !important;">
+              <i class="fas fa-shield-alt me-1" style="color: #4ade80;"></i>Secure Session
             </span>
           </div>
           <small class="text-muted">Manage payments, track customer orders, upload products & monitor store performance</small>
@@ -118,10 +115,6 @@
         <button class="btn btn-outline-danger btn-sm d-flex align-items-center gap-2 rounded-pill px-3 fw-bold" (click)="clearAllStoreData()" title="Clear/Reset All Store Data">
           <i class="fas fa-trash-alt"></i>
           <span>Reset All Data</span>
-        </button>
-        <button class="btn btn-outline-success btn-sm d-flex align-items-center gap-2 rounded-pill px-3 fw-bold" (click)="loadDemoProducts()" title="Seed/Reload Mock Demo Products">
-          <i class="fas fa-seedling"></i>
-          <span>Seed Demo Data</span>
         </button>
         <button class="btn btn-danger btn-sm d-flex align-items-center gap-2 rounded-pill px-3 fw-bold" (click)="lockPortal()" title="Lock Admin Access">
           <i class="fas fa-lock"></i>

@@ -23,9 +23,6 @@
                     <ul class="dropdown-menu dropdown-menu-end shadow-lg rounded-3 border-0 p-2" style="min-width: 240px; z-index: 1050;">
                         <li class="dropdown-header fw-bold text-uppercase text-muted border-bottom pb-1 mb-1 small d-flex align-items-center justify-content-between">
                             <span><i class="fas fa-coins me-1 text-primary"></i> Select Currency</span>
-                            <span class="badge bg-success-subtle text-success border border-success rounded-pill px-2 py-0.5 text-none" style="font-size: 10px;" title="Real-time exchange rates auto-updated">
-                              <i class="fas fa-wifi me-1"></i>Live
-                            </span>
                         </li>
                         <li *ngFor="let curr of currencies">
                             <button class="dropdown-item rounded-2 d-flex align-items-center justify-content-between py-2 my-1"
@@ -161,10 +158,7 @@
         <div class="col-md-4 col-lg-3 text-center text-lg-end">
             <div class="d-inline-flex align-items-center gap-3">
 
-                <!-- Compare -->
-                <div class="icon-circle">
-                    <i class="fas fa-random"></i>
-                </div>
+
 
                 <!-- Wishlist -->
                 <div class="icon-circle position-relative cursor-pointer" [routerLink]="['/wishlist']" title="View Wishlist">

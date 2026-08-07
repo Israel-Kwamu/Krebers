@@ -562,13 +562,6 @@ export class ProductService {
       }
     }
   }
-
-  loadDemoProducts(): void {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      this.products = [...this.defaultProducts];
-      this.saveProductsToStorage();
-    }
-  }
 }
 
 

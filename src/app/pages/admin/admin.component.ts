@@ -160,11 +160,6 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  quickDemoUnlock(): void {
-    this.passcode = 'Krebers2026';
-    this.verifyPasscode();
-  }
-
   triggerLockout(): void {
     this.isLockedOut = true;
     this.lockoutTimeRemaining = 30;
@@ -239,12 +234,6 @@ export class AdminComponent implements OnInit {
       this.refreshData();
       this.lockPortal();
     }
-  }
-
-  loadDemoProducts(): void {
-    this.productService.loadDemoProducts();
-    this.toastService.showCustomToast('✨ Mock/Demo products seeded successfully!');
-    this.refreshData();
   }
 
   calculateMetrics(): void {
